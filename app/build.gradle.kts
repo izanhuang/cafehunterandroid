@@ -70,6 +70,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.appcompat)
     implementation(libs.material)
+    implementation(libs.maps.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

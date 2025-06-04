@@ -1,7 +1,6 @@
 package com.izanhuang.cafe_hunter_android
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.padding
@@ -15,17 +14,19 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.*
+import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.izanhuang.cafe_hunter_android.ui.components.HomeScreen
+import com.izanhuang.cafe_hunter_android.ui.components.MapScreen
 import com.izanhuang.cafe_hunter_android.ui.components.ProfileScreen
 import com.izanhuang.cafe_hunter_android.ui.components.SearchScreen
 import com.izanhuang.cafe_hunter_android.utils.Constants
 
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -80,6 +81,9 @@ fun NavHostContainer(
             composable("profile") {
                 ProfileScreen()
             }
+
+            // route: map
+            composable("map") { MapScreen() }
         })
 }
 

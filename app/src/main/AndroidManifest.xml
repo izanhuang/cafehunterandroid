@@ -18,14 +18,8 @@
             android:value="${MAPS_API_KEY}" />
 
         <activity
-            android:name=".MapsActivity"
-            android:exported="true"
-            android:label="@string/title_activity_maps">
-        </activity>
-        <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.Cafehunterandroid">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
