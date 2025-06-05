@@ -1,8 +1,8 @@
-package com.izanhuang.cafe_hunter_android.utils
+package com.izanhuang.cafe_hunter_android.core.utils
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import com.izanhuang.cafe_hunter_android.models.BottomNavItem
+import com.izanhuang.cafe_hunter_android.core.ui.models.BottomNavItem
 
 object Constants {
     val BottomNavItems = listOf(

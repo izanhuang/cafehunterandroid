@@ -1,4 +1,4 @@
-package com.izanhuang.cafe_hunter_android.models
+package com.izanhuang.cafe_hunter_android.core.ui.models
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

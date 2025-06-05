@@ -1,4 +1,4 @@
-package com.izanhuang.cafe_hunter_android.ui.theme
+package com.izanhuang.cafe_hunter_android.core.ui.theme
 
 import android.app.Activity
 import android.os.Build

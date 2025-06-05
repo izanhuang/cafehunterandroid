@@ -1,4 +1,4 @@
-package com.izanhuang.cafe_hunter_android.ui.components
+package com.izanhuang.cafe_hunter_android.core.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
