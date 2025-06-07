@@ -19,4 +19,6 @@ object Constants {
             route = "profile"
         )
     )
+    // Define a constant for the location permission request code
+    val LOCATION_PERMISSION_REQUEST = 1001
 }

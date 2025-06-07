@@ -11,7 +11,9 @@ import androidx.navigation.compose.composable
 @Composable
 fun NavHostContainer(
     navController: NavHostController,
-    padding: PaddingValues
+    padding: PaddingValues,
+    userLat: Double?,
+    userLong: Double?,
 ) {
 
     NavHost(
@@ -27,7 +29,7 @@ fun NavHostContainer(
 
             // route : Home
             composable("home") {
-                HomeScreen(navController = navController)
+                HomeScreen(userLat = userLat, userLong = userLong)
             }
 
             // route : profile

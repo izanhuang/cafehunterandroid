@@ -8,6 +8,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentActivity
@@ -17,13 +20,13 @@ import com.google.android.gms.location.LocationServices
 import com.izanhuang.cafe_hunter_android.core.ui.components.BottomNavigationBar
 import com.izanhuang.cafe_hunter_android.core.ui.components.NavHostContainer
 import com.izanhuang.cafe_hunter_android.core.ui.theme.CafehunterandroidTheme
+import com.izanhuang.cafe_hunter_android.core.utils.Constants
 
 class MainActivity : FragmentActivity() {
     // Initialize the location provider client
     lateinit var locationClient: FusedLocationProviderClient
-
-    // Define a constant for the location permission request code
-    val LOCATION_PERMISSION_REQUEST = 1001
+    var userLat: Double? by mutableStateOf(null)
+    var userLong: Double? by mutableStateOf(null)
 
     private fun getCurrentLocation() {
         // Check if the location permission is granted
@@ -36,7 +39,7 @@ class MainActivity : FragmentActivity() {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST
+                Constants.LOCATION_PERMISSION_REQUEST
             )
             return
         }
@@ -48,10 +51,9 @@ class MainActivity : FragmentActivity() {
                 val lat = location.latitude
                 val lon = location.longitude
 
-                // TODO
-                Log.i("MAIN ACTIVITY", "$lat, $lon")
+                userLat = lat
+                userLong = lon
             } else {
-                // TODO
                 Log.i("MAIN ACTIVITY", "Location null")
             }
         }
@@ -75,7 +77,7 @@ class MainActivity : FragmentActivity() {
                             BottomNavigationBar(navController = navController)
                         }, content = { padding ->
                             // Nav host: where screens are placed
-                            NavHostContainer(navController = navController, padding = padding)
+                            NavHostContainer(navController = navController, padding = padding, userLat = userLat, userLong = userLong)
                         }
                     )
                 }
@@ -92,7 +94,7 @@ class MainActivity : FragmentActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         // Check if the permission was granted
-        if (requestCode == LOCATION_PERMISSION_REQUEST &&
+        if (requestCode == Constants.LOCATION_PERMISSION_REQUEST &&
             grantResults.isNotEmpty() &&
             grantResults[0] == PackageManager.PERMISSION_GRANTED
         ) {

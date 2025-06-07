@@ -40,6 +40,7 @@ android {
         compose = true
         viewBinding = true
         buildConfig = true
+        dataBinding = true
     }
 }
 
@@ -74,12 +75,11 @@ dependencies {
     implementation(libs.maps.compose)
 
     //Lifecycle
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     //Google Services & Maps
     implementation(libs.play.services.location)
-//    implementation 'com.google.maps.android:maps-compose:2.9.0'
     implementation(libs.play.services.maps.v1810)
 
     //Accompanist (Permission)

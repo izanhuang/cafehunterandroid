@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -18,7 +17,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.navigation.NavHostController
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -31,7 +29,19 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    userLat: Double?,
+    userLong: Double?
+) {
+    if (userLat !== null && userLong !== null) {
+        MapScreen(lat = userLat, long = userLong)
+    } else {
+        InitialHomeScreen()
+    }
+}
+
+@Composable
+fun InitialHomeScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -51,26 +61,6 @@ fun HomeScreen() {
         }) {
             Text("Get Current Location")
         }
-    }
-}
-
-@Composable
-fun SearchScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        // Icon on the screen
-        Icon(
-            imageVector = Icons.Default.Search,
-            contentDescription = "search",
-            tint = Color(0xFF0F9D58)
-        )
-        // Text on the screen
-        Text(text = "Search", color = Color.Black)
     }
 }
 
@@ -95,8 +85,8 @@ fun ProfileScreen() {
 }
 
 @Composable
-fun MapScreen() {
-    val atasehir = LatLng(40.9971, 29.1007)
+fun MapScreen(lat: Double, long: Double) {
+    val atasehir = LatLng(lat, long)
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(atasehir, 15f)
     }
