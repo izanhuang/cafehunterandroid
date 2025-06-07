@@ -27,20 +27,12 @@ fun NavHostContainer(
 
             // route : Home
             composable("home") {
-                HomeScreen()
-            }
-
-            // route : search
-            composable("search") {
-                SearchScreen()
+                HomeScreen(navController = navController)
             }
 
             // route : profile
             composable("profile") {
                 ProfileScreen()
             }
-
-            // route: map
-            composable("map") { MapScreen() }
         })
 }

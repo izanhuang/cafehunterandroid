@@ -74,20 +74,20 @@ dependencies {
     implementation(libs.maps.compose)
 
     //Lifecycle
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.runtime.compose)
 
     //Google Services & Maps
-    implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation(libs.play.services.location)
 //    implementation 'com.google.maps.android:maps-compose:2.9.0'
-    implementation("com.google.android.gms:play-services-maps:18.1.0")
+    implementation(libs.play.services.maps.v1810)
 
     //Accompanist (Permission)
-    implementation("com.google.accompanist:accompanist-permissions:0.31.3-beta")
+    implementation(libs.accompanist.permissions)
 
     //Hilt
-    implementation("com.google.dagger:hilt-android:2.44")
-    kapt("com.google.dagger:hilt-compiler:2.44")
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

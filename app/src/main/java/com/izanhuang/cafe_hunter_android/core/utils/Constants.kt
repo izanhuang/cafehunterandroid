@@ -12,18 +12,6 @@ object Constants {
             icon = Icons.Filled.Home,
             route = "home"
         ),
-        // Search screen
-        BottomNavItem(
-            label = "Search",
-            icon = Icons.Filled.Search,
-            route = "search"
-        ),
-        // Map screen
-        BottomNavItem(
-            label = "Map",
-            icon = Icons.Filled.Place,
-            route = "map"
-        ),
         // Profile screen
         BottomNavItem(
             label = "Profile",
