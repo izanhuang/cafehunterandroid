@@ -7,13 +7,13 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.izanhuang.cafe_hunter_android.core.ui.LocationViewModel
 
 @Composable
 fun NavHostContainer(
     navController: NavHostController,
     padding: PaddingValues,
-    userLat: Double?,
-    userLong: Double?,
+    locationViewModel: LocationViewModel
 ) {
 
     NavHost(
@@ -29,7 +29,7 @@ fun NavHostContainer(
 
             // route : Home
             composable("home") {
-                HomeScreen(userLat = userLat, userLong = userLong)
+                HomeScreen(locationViewModel = locationViewModel)
             }
 
             // route : profile

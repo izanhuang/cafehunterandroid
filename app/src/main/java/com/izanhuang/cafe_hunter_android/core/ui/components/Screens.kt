@@ -11,6 +11,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,16 +28,33 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.MarkerInfoWindow
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.izanhuang.cafe_hunter_android.core.ui.LocationViewModel
+import com.izanhuang.cafe_hunter_android.core.utils.Resource
 
 @Composable
-fun HomeScreen(
-    userLat: Double?,
-    userLong: Double?
-) {
-    if (userLat !== null && userLong !== null) {
-        MapScreen(lat = userLat, long = userLong)
-    } else {
-        InitialHomeScreen()
+fun HomeScreen(locationViewModel: LocationViewModel) {
+    val locationUiState by locationViewModel.uiState.collectAsState()
+
+    when (val state = locationUiState) {
+        is Resource.Success -> MapScreen(
+            lat = state.data.currentLat,
+            long = state.data.currentLong
+        )
+        is Resource.Error -> InitialHomeScreen()
+        Resource.Loading -> LoadingScreen()
+    }
+}
+
+@Composable
+fun LoadingScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(text = "Loading", color = Color.Black)
     }
 }
 
@@ -103,7 +121,6 @@ fun MapScreen(lat: Double, long: Double) {
         properties = properties,
         uiSettings = uiSettings
     ) {
-
         MarkerInfoWindow(
             state = MarkerState(position = atasehir),
             icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE),

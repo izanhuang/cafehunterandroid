@@ -8,15 +8,14 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.izanhuang.cafe_hunter_android.core.ui.LocationViewModel
 import com.izanhuang.cafe_hunter_android.core.ui.components.BottomNavigationBar
 import com.izanhuang.cafe_hunter_android.core.ui.components.NavHostContainer
 import com.izanhuang.cafe_hunter_android.core.ui.theme.CafehunterandroidTheme
@@ -24,9 +23,8 @@ import com.izanhuang.cafe_hunter_android.core.utils.Constants
 
 class MainActivity : FragmentActivity() {
     // Initialize the location provider client
-    lateinit var locationClient: FusedLocationProviderClient
-    var userLat: Double? by mutableStateOf(null)
-    var userLong: Double? by mutableStateOf(null)
+    private lateinit var locationClient: FusedLocationProviderClient
+    private lateinit var locationViewModel: LocationViewModel
 
     private fun getCurrentLocation() {
         // Check if the location permission is granted
@@ -48,11 +46,7 @@ class MainActivity : FragmentActivity() {
         locationClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) {
                 // If location is available, extract latitude and longitude
-                val lat = location.latitude
-                val lon = location.longitude
-
-                userLat = lat
-                userLong = lon
+                locationViewModel.updateLocation(long = location.longitude, lat = location.latitude)
             } else {
                 Log.i("MAIN ACTIVITY", "Location null")
             }
@@ -62,6 +56,7 @@ class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         locationClient = LocationServices.getFusedLocationProviderClient(this)
+        locationViewModel = ViewModelProvider(this)[LocationViewModel::class.java]
         getCurrentLocation()
 
         enableEdgeToEdge()
@@ -77,7 +72,11 @@ class MainActivity : FragmentActivity() {
                             BottomNavigationBar(navController = navController)
                         }, content = { padding ->
                             // Nav host: where screens are placed
-                            NavHostContainer(navController = navController, padding = padding, userLat = userLat, userLong = userLong)
+                            NavHostContainer(
+                                navController = navController,
+                                padding = padding,
+                                locationViewModel = locationViewModel
+                            )
                         }
                     )
                 }
