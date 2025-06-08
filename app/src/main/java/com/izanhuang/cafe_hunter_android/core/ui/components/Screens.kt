@@ -25,21 +25,24 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
-import com.google.maps.android.compose.MarkerInfoWindow
+import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.izanhuang.cafe_hunter_android.core.ui.LocationViewModel
+import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
+import com.izanhuang.cafe_hunter_android.core.domain.MapViewModel
 import com.izanhuang.cafe_hunter_android.core.utils.Resource
 
 @Composable
-fun HomeScreen(locationViewModel: LocationViewModel) {
-    val locationUiState by locationViewModel.uiState.collectAsState()
+fun HomeScreen(mapViewModel: MapViewModel) {
+    val locationUiState by mapViewModel.uiState.collectAsState()
 
     when (val state = locationUiState) {
         is Resource.Success -> MapScreen(
             lat = state.data.currentLat,
-            long = state.data.currentLong
+            long = state.data.currentLong,
+            cafes = state.data.cafes
         )
+
         is Resource.Error -> InitialHomeScreen()
         Resource.Loading -> LoadingScreen()
     }
@@ -103,10 +106,10 @@ fun ProfileScreen() {
 }
 
 @Composable
-fun MapScreen(lat: Double, long: Double) {
-    val atasehir = LatLng(lat, long)
+fun MapScreen(lat: Double, long: Double, cafes: List<PlaceResult>) {
+    val userLocation = LatLng(lat, long)
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(atasehir, 15f)
+        position = CameraPosition.fromLatLngZoom(userLocation, 15f)
     }
     val uiSettings by remember {
         mutableStateOf(MapUiSettings(zoomControlsEnabled = true))
@@ -121,9 +124,22 @@ fun MapScreen(lat: Double, long: Double) {
         properties = properties,
         uiSettings = uiSettings
     ) {
-        MarkerInfoWindow(
-            state = MarkerState(position = atasehir),
-            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE),
-        ) {}
+        Marker(
+            state = MarkerState(position = userLocation),
+            title = "You",
+            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)
+        )
+
+        cafes.forEach { cafe ->
+            Marker(
+                state = MarkerState(
+                    position = LatLng(
+                        cafe.geometry.location.lat,
+                        cafe.geometry.location.lng
+                    )
+                ),
+                title = cafe.name
+            )
+        }
     }
 }

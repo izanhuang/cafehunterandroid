@@ -77,6 +77,10 @@ dependencies {
     //Lifecycle
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.androidx.lifecycle.viewmodel.compose.v270) // For ViewModel in Compose
+    implementation(libs.androidx.lifecycle.runtime.ktx.v270)
 
     //Google Services & Maps
     implementation(libs.play.services.location)
@@ -87,6 +91,7 @@ dependencies {
 
     //Hilt
     implementation(libs.hilt.android)
+    implementation(libs.androidx.media3.common.ktx)
     kapt(libs.hilt.compiler)
 
     testImplementation(libs.junit)

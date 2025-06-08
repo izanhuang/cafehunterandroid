@@ -15,7 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.izanhuang.cafe_hunter_android.core.ui.LocationViewModel
+import com.izanhuang.cafe_hunter_android.core.domain.MapViewModel
 import com.izanhuang.cafe_hunter_android.core.ui.components.BottomNavigationBar
 import com.izanhuang.cafe_hunter_android.core.ui.components.NavHostContainer
 import com.izanhuang.cafe_hunter_android.core.ui.theme.CafehunterandroidTheme
@@ -24,7 +24,7 @@ import com.izanhuang.cafe_hunter_android.core.utils.Constants
 class MainActivity : FragmentActivity() {
     // Initialize the location provider client
     private lateinit var locationClient: FusedLocationProviderClient
-    private lateinit var locationViewModel: LocationViewModel
+    private lateinit var mapViewModel: MapViewModel
 
     private fun getCurrentLocation() {
         // Check if the location permission is granted
@@ -46,7 +46,7 @@ class MainActivity : FragmentActivity() {
         locationClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) {
                 // If location is available, extract latitude and longitude
-                locationViewModel.updateLocation(long = location.longitude, lat = location.latitude)
+                mapViewModel.updateLocation(long = location.longitude, lat = location.latitude)
             } else {
                 Log.i("MAIN ACTIVITY", "Location null")
             }
@@ -56,7 +56,7 @@ class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         locationClient = LocationServices.getFusedLocationProviderClient(this)
-        locationViewModel = ViewModelProvider(this)[LocationViewModel::class.java]
+        mapViewModel = ViewModelProvider(this, MapViewModel.Factory)[MapViewModel::class.java]
         getCurrentLocation()
 
         enableEdgeToEdge()
@@ -75,7 +75,7 @@ class MainActivity : FragmentActivity() {
                             NavHostContainer(
                                 navController = navController,
                                 padding = padding,
-                                locationViewModel = locationViewModel
+                                mapViewModel = mapViewModel
                             )
                         }
                     )
