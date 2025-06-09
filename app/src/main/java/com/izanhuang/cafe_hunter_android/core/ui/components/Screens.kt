@@ -11,14 +11,15 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -31,6 +32,8 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
 import com.izanhuang.cafe_hunter_android.core.domain.MapViewModel
 import com.izanhuang.cafe_hunter_android.core.utils.Resource
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.debounce
 
 @Composable
 fun HomeScreen(mapViewModel: MapViewModel) {
@@ -38,6 +41,7 @@ fun HomeScreen(mapViewModel: MapViewModel) {
 
     when (val state = locationUiState) {
         is Resource.Success -> MapScreen(
+            mapViewModel = mapViewModel,
             lat = state.data.currentLat,
             long = state.data.currentLong,
             cafes = state.data.cafes
@@ -105,11 +109,17 @@ fun ProfileScreen() {
     }
 }
 
+@OptIn(FlowPreview::class)
 @Composable
-fun MapScreen(lat: Double, long: Double, cafes: List<PlaceResult>) {
-    val userLocation = LatLng(lat, long)
+fun MapScreen(mapViewModel: MapViewModel, lat: Double, long: Double, cafes: List<PlaceResult>) {
+    val currentLocation = LatLng(lat, long)
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(userLocation, 15f)
+        position = CameraPosition.fromLatLngZoom(currentLocation, 15f)
+    }
+    LaunchedEffect(cameraPositionState) {
+        snapshotFlow { cameraPositionState.position.target }
+            .debounce(200)
+            .collect { mapViewModel.updateLocation(lat = it.latitude, long = it.longitude) }
     }
     val uiSettings by remember {
         mutableStateOf(MapUiSettings(zoomControlsEnabled = true))
@@ -124,11 +134,11 @@ fun MapScreen(lat: Double, long: Double, cafes: List<PlaceResult>) {
         properties = properties,
         uiSettings = uiSettings
     ) {
-        Marker(
-            state = MarkerState(position = userLocation),
-            title = "You",
-            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)
-        )
+//        Marker(
+//            state = MarkerState(position = currentLocation),
+//            title = "You",
+//            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)
+//        )
 
         cafes.forEach { cafe ->
             Marker(
