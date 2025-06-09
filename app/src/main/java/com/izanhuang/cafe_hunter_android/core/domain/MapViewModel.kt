@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import com.izanhuang.cafe_hunter_android.core.data.LatLng
 import com.izanhuang.cafe_hunter_android.core.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,8 +43,21 @@ class MapViewModel(
         }
     }
 
-    fun updateLocation(long: Double, lat: Double) {
-        _uiState.value = Resource.Success(MapUiState(currentLong = long, currentLat = lat))
+    fun updateUserLocation(latlng: LatLng) {
+        _uiState.value = Resource.Success(MapUiState(userLatLng = latlng, currentLatLng = latlng))
+        fetchNearbyCafes()
+    }
+
+    fun updateCurrentLocation(latlng: LatLng) {
+        _uiState.update { currentUiState ->
+            when (currentUiState) {
+                is Resource.Success -> {
+                    Resource.Success(currentUiState.data.copy(currentLatLng = latlng))
+                }
+
+                is Resource.Error, Resource.Loading -> currentUiState
+            }
+        }
         fetchNearbyCafes()
     }
 
@@ -54,8 +68,7 @@ class MapViewModel(
                     when (currentUiState) {
                         is Resource.Success -> {
                             val cafes = repository.getNearbyCafes(
-                                lat = currentUiState.data.currentLat,
-                                long = currentUiState.data.currentLong
+                                currentUiState.data.currentLatLng
                             )
                             Resource.Success(currentUiState.data.copy(cafes = cafes))
                         }

@@ -20,8 +20,10 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.LatLng as MapsLatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
@@ -29,6 +31,7 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.izanhuang.cafe_hunter_android.core.data.LatLng
 import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
 import com.izanhuang.cafe_hunter_android.core.domain.MapViewModel
 import com.izanhuang.cafe_hunter_android.core.utils.Resource
@@ -42,8 +45,8 @@ fun HomeScreen(mapViewModel: MapViewModel) {
     when (val state = locationUiState) {
         is Resource.Success -> MapScreen(
             mapViewModel = mapViewModel,
-            lat = state.data.currentLat,
-            long = state.data.currentLong,
+            userLatLng = state.data.userLatLng,
+            currentLatLng = state.data.currentLatLng,
             cafes = state.data.cafes
         )
 
@@ -111,15 +114,30 @@ fun ProfileScreen() {
 
 @OptIn(FlowPreview::class)
 @Composable
-fun MapScreen(mapViewModel: MapViewModel, lat: Double, long: Double, cafes: List<PlaceResult>) {
-    val currentLocation = LatLng(lat, long)
+fun MapScreen(
+    mapViewModel: MapViewModel,
+    userLatLng: LatLng,
+    currentLatLng: LatLng,
+    cafes: List<PlaceResult>
+) {
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(currentLocation, 15f)
+        position = CameraPosition.fromLatLngZoom(
+            MapsLatLng(
+                currentLatLng.lat, currentLatLng.lng
+            ), 15f
+        )
     }
     LaunchedEffect(cameraPositionState) {
         snapshotFlow { cameraPositionState.position.target }
             .debounce(200)
-            .collect { mapViewModel.updateLocation(lat = it.latitude, long = it.longitude) }
+            .collect {
+                mapViewModel.updateCurrentLocation(
+                    LatLng(
+                        lat = it.latitude,
+                        lng = it.longitude
+                    )
+                )
+            }
     }
     val uiSettings by remember {
         mutableStateOf(MapUiSettings(zoomControlsEnabled = true))
@@ -128,27 +146,34 @@ fun MapScreen(mapViewModel: MapViewModel, lat: Double, long: Double, cafes: List
         mutableStateOf(MapProperties(mapType = MapType.NORMAL))
     }
 
+    fun onMarkerClick(marker: Marker): Boolean {
+        marker.showInfoWindow()
+
+        return true
+    }
+
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
         properties = properties,
-        uiSettings = uiSettings
+        uiSettings = uiSettings,
     ) {
-//        Marker(
-//            state = MarkerState(position = currentLocation),
-//            title = "You",
-//            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)
-//        )
+        Marker(
+            state = MarkerState(position = MapsLatLng(userLatLng.lat, userLatLng.lng)),
+            title = "You",
+            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE),
+        )
 
         cafes.forEach { cafe ->
             Marker(
                 state = MarkerState(
-                    position = LatLng(
+                    position = MapsLatLng(
                         cafe.geometry.location.lat,
                         cafe.geometry.location.lng
                     )
                 ),
-                title = cafe.name
+                title = cafe.name,
+                onClick = { marker -> onMarkerClick(marker) }
             )
         }
     }

@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.izanhuang.cafe_hunter_android.core.data.LatLng
 import com.izanhuang.cafe_hunter_android.core.domain.MapViewModel
 import com.izanhuang.cafe_hunter_android.core.ui.components.BottomNavigationBar
 import com.izanhuang.cafe_hunter_android.core.ui.components.NavHostContainer
@@ -46,7 +47,12 @@ class MainActivity : FragmentActivity() {
         locationClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) {
                 // If location is available, extract latitude and longitude
-                mapViewModel.updateLocation(long = location.longitude, lat = location.latitude)
+                mapViewModel.updateUserLocation(
+                    LatLng(
+                        lat = location.latitude,
+                        lng = location.longitude
+                    )
+                )
             } else {
                 Log.i("MAIN ACTIVITY", "Location null")
             }
@@ -105,5 +111,4 @@ class MainActivity : FragmentActivity() {
             Log.i("MAIN ACTIVITY", "Location permission denied")
         }
     }
-
 }
