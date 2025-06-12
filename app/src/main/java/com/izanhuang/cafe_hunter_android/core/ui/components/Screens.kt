@@ -16,6 +16,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,7 +24,6 @@ import androidx.compose.ui.graphics.Color
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.LatLng as MapsLatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
@@ -37,6 +37,7 @@ import com.izanhuang.cafe_hunter_android.core.domain.MapViewModel
 import com.izanhuang.cafe_hunter_android.core.utils.Resource
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
+import com.google.android.gms.maps.model.LatLng as MapsLatLng
 
 @Composable
 fun HomeScreen(mapViewModel: MapViewModel) {
@@ -127,7 +128,16 @@ fun MapScreen(
             ), 15f
         )
     }
-    LaunchedEffect(cameraPositionState) {
+    val uiSettings by remember {
+        mutableStateOf(MapUiSettings(zoomControlsEnabled = true))
+    }
+    val properties by remember {
+        mutableStateOf(MapProperties(mapType = MapType.NORMAL))
+    }
+    var lastOpenedMarker by remember { mutableStateOf<Marker?>(null) }
+
+    LaunchedEffect(cameraPositionState.position.target) {
+        lastOpenedMarker?.hideInfoWindow()
         snapshotFlow { cameraPositionState.position.target }
             .debounce(200)
             .collect {
@@ -139,15 +149,23 @@ fun MapScreen(
                 )
             }
     }
-    val uiSettings by remember {
-        mutableStateOf(MapUiSettings(zoomControlsEnabled = true))
-    }
-    val properties by remember {
-        mutableStateOf(MapProperties(mapType = MapType.NORMAL))
-    }
 
-    fun onMarkerClick(marker: Marker): Boolean {
-        marker.showInfoWindow()
+    fun onMarkerClick(clickedMarker: Marker): Boolean {
+        lastOpenedMarker?.let { lastOpened ->
+            // Close the info window
+            lastOpened.hideInfoWindow()
+
+            // Is the marker the same marker that was already open
+            if (lastOpened == clickedMarker) {
+                // Nullify the lastOpened object
+                lastOpenedMarker = null
+                // Return so that the info window isn't opened again
+                return true
+            }
+        }
+
+        clickedMarker.showInfoWindow()
+        lastOpenedMarker = clickedMarker
 
         return true
     }
