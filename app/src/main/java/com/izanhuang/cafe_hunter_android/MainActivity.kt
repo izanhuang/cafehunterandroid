@@ -10,10 +10,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentActivity
@@ -22,16 +24,20 @@ import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.izanhuang.cafe_hunter_android.core.data.LatLng
+import com.izanhuang.cafe_hunter_android.core.domain.AuthViewModel
 import com.izanhuang.cafe_hunter_android.core.domain.MapViewModel
 import com.izanhuang.cafe_hunter_android.core.ui.components.BottomNavigationBar
 import com.izanhuang.cafe_hunter_android.core.ui.components.NavHostContainer
 import com.izanhuang.cafe_hunter_android.core.ui.theme.CafehunterandroidTheme
 import com.izanhuang.cafe_hunter_android.core.utils.Constants
 
+val LocalAuthViewModel = staticCompositionLocalOf<AuthViewModel>{ error("AuthViewModel not set") }
+
 class MainActivity : FragmentActivity() {
     // Initialize the location provider client
     private lateinit var locationClient: FusedLocationProviderClient
     private lateinit var mapViewModel: MapViewModel
+    private lateinit var authViewModel: AuthViewModel
 
     private fun getCurrentLocation() {
         // Check if the location permission is granted
@@ -69,35 +75,39 @@ class MainActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         locationClient = LocationServices.getFusedLocationProviderClient(this)
         mapViewModel = ViewModelProvider(this, MapViewModel.Factory)[MapViewModel::class.java]
+        authViewModel = ViewModelProvider(this, AuthViewModel.Factory)[AuthViewModel::class.java]
+
         getCurrentLocation()
 
         enableEdgeToEdge()
         setContent {
-            CafehunterandroidTheme(dynamicColor = false, darkTheme = false) {
-                val navController = rememberNavController()
-                var isMapView by remember { mutableStateOf(true) }
+            CompositionLocalProvider(LocalAuthViewModel provides authViewModel) {
+                CafehunterandroidTheme(dynamicColor = false, darkTheme = false) {
+                    val navController = rememberNavController()
+                    var isMapView by remember { mutableStateOf(true) }
 
-                Surface(color = Color.White) {
-                    // Scaffold Component
-                    Scaffold(
-                        floatingActionButton = {
-                            Button(onClick = { isMapView = !isMapView }) {
-                                Text("List View")
+                    Surface(color = Color.White) {
+                        // Scaffold Component
+                        Scaffold(
+                            floatingActionButton = {
+                                Button(onClick = { isMapView = !isMapView }) {
+                                    Text("List View")
+                                }
+                            },
+                            // Bottom navigation
+                            bottomBar = {
+                                BottomNavigationBar(navController = navController)
+                            }, content = { padding ->
+                                // Nav host: where screens are placed
+                                NavHostContainer(
+                                    navController = navController,
+                                    padding = padding,
+                                    mapViewModel = mapViewModel,
+                                    isMapView = isMapView,
+                                )
                             }
-                        },
-                        // Bottom navigation
-                        bottomBar = {
-                            BottomNavigationBar(navController = navController)
-                        }, content = { padding ->
-                            // Nav host: where screens are placed
-                            NavHostContainer(
-                                navController = navController,
-                                padding = padding,
-                                mapViewModel = mapViewModel,
-                                isMapView = isMapView,
-                            )
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }
