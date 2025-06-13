@@ -60,23 +60,21 @@ class AuthViewModel : ViewModel() {
             }
     }
 
-    fun handleGoogleAuthResult(authResult: AuthResult, onResult: (Boolean, String?) -> Unit) {
-//        val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
-        authResult.credential?.let {
-            auth.signInWithCredential(it)
-                .addOnSuccessListener {
-                    val user = auth.currentUser
-                    _user.value = user
-                    if (user != null) {
-                        createUserInFirestore(user)
-                    }
-                    onResult(true, null)
-                }
-                .addOnFailureListener { e ->
-                    onResult(false, e.message)
-                }
+    fun handleGoogleAuthResult(
+        authResult: AuthResult?,
+        onResult: (Boolean, String?) -> Unit
+    ) {
+        val user = authResult?.user
+        if (authResult == null || user == null) {
+            onResult(false, "Google Sign-In failed. Try again.")
+            return
         }
+
+        _user.value = user
+        createUserInFirestore(user)
+        onResult(true, null)
     }
+
 
     private fun createUserInFirestore(user: FirebaseUser) {
         val userRef = db.collection("users").document(user.uid)

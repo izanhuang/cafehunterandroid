@@ -35,10 +35,19 @@ fun LoginForm(authViewModel: AuthViewModel) {
     val password = remember { mutableStateOf("") }
 
     val launcher = rememberGoogleSignInLauncher { authResult ->
-        authViewModel.handleGoogleAuthResult(
-            authResult = authResult,
-            onResult = { isSignedIn, message -> Log.e("Google Sign In", "Failed")}
-        )
+        if (authResult != null) {
+            authViewModel.handleGoogleAuthResult(
+                authResult = authResult,
+                onResult = { isSignedIn, message ->
+                    if (isSignedIn) {
+                        Log.d("Google Sign In", "Signed in successfully")
+                    } else {
+                        Log.e("Google Sign In", "Sign in failed: $message")
+                        Toast.makeText(context, message ?: "Sign in failed", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            )
+        }
     }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
