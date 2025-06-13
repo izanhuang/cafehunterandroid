@@ -1,4 +1,5 @@
 [versions]
+accompanistPager = "0.31.5-beta"
 accompanistPermissions = "0.31.3-beta"
 agp = "8.9.3"
 coilCompose = "2.5.0"
@@ -27,8 +28,12 @@ playServicesMapsVersion = "19.2.0"
 retrofit = "2.9.0"
 secretsGradlePlugin = "2.0.1"
 media3CommonKtx = "1.7.1"
+firebaseFirestoreKtx = "25.1.4"
+firebaseDatabaseKtx = "21.0.0"
 
 [libraries]
+accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
+accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanistPager" }
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeKtx" }
@@ -66,6 +71,8 @@ play-services-maps-v1810 = { module = "com.google.android.gms:play-services-maps
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 secrets-gradle-plugin = { module = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }
 androidx-media3-common-ktx = { group = "androidx.media3", name = "media3-common-ktx", version.ref = "media3CommonKtx" }
+firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
+firebase-database-ktx = { group = "com.google.firebase", name = "firebase-database-ktx", version.ref = "firebaseDatabaseKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

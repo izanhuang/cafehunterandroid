@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     id("kotlin-kapt")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -92,10 +93,23 @@ dependencies {
     //Hilt
     implementation(libs.hilt.android)
     implementation(libs.androidx.media3.common.ktx)
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.database.ktx)
     kapt(libs.hilt.compiler)
 
     //Colt
     implementation(libs.coil.compose)
+
+    //Image carousel
+    implementation(libs.accompanist.pager)
+    implementation(libs.accompanist.pager.indicators)
+
+    //Firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
+    implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.firebaseui:firebase-ui-auth:8.0.2")
+    implementation("com.google.firebase:firebase-storage-ktx:20.0.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
