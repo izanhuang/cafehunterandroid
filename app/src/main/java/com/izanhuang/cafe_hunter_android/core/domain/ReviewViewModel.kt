@@ -69,7 +69,8 @@ class ReviewViewModel(private val db: FirebaseFirestore = FirebaseFirestore.getI
             "would_recommend" to review.wouldRecommend,
             "description" to review.description,
             "user_id" to db.collection("users").document(userId),
-            "cafe_id" to db.collection("cafes").document(cafeId)
+            "cafe_id" to db.collection("cafes").document(cafeId),
+            "created_at" to Timestamp.now(),
         )
 
         reviewRef.set(reviewData).addOnSuccessListener {
@@ -105,7 +106,8 @@ class ReviewViewModel(private val db: FirebaseFirestore = FirebaseFirestore.getI
                 isCozy = getBoolean("is_cozy") ?: false,
                 isWorkFriendly = getBoolean("is_work_friendly") ?: false,
                 wouldRecommend = getBoolean("would_recommend") ?: false,
-                description = getString("description") ?: ""
+                description = getString("description") ?: "",
+                created_at = getTimestamp("created_at")?.toDate()?.time ?: System.currentTimeMillis(),
             )
         } catch (e: Exception) {
             null

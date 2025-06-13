@@ -96,7 +96,6 @@ fun LoginForm(authViewModel: AuthViewModel) {
                 launcher.launch(googleSignInClient.signInIntent)
             },
             modifier = Modifier.fillMaxWidth(),
-//            colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
         ) {
             Icon(Icons.Default.AccountCircle, contentDescription = "Google")
             Spacer(modifier = Modifier.width(8.dp))

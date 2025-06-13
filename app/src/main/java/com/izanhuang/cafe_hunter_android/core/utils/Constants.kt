@@ -14,7 +14,7 @@ object Constants {
         ),
         // Profile screen
         BottomNavItem(
-            label = "Auth",
+            label = "Profile",
             icon = Icons.Filled.Person,
             route = "auth"
         )
