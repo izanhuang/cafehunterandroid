@@ -6,8 +6,14 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentActivity
@@ -69,10 +75,16 @@ class MainActivity : FragmentActivity() {
         setContent {
             CafehunterandroidTheme(dynamicColor = false, darkTheme = false) {
                 val navController = rememberNavController()
+                var isMapView by remember { mutableStateOf(true) }
 
                 Surface(color = Color.White) {
                     // Scaffold Component
                     Scaffold(
+                        floatingActionButton = {
+                            Button(onClick = { isMapView = !isMapView }) {
+                                Text("List View")
+                            }
+                        },
                         // Bottom navigation
                         bottomBar = {
                             BottomNavigationBar(navController = navController)
@@ -81,7 +93,8 @@ class MainActivity : FragmentActivity() {
                             NavHostContainer(
                                 navController = navController,
                                 padding = padding,
-                                mapViewModel = mapViewModel
+                                mapViewModel = mapViewModel,
+                                isMapView = isMapView,
                             )
                         }
                     )

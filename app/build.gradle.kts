@@ -94,6 +94,9 @@ dependencies {
     implementation(libs.androidx.media3.common.ktx)
     kapt(libs.hilt.compiler)
 
+    //Colt
+    implementation(libs.coil.compose)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

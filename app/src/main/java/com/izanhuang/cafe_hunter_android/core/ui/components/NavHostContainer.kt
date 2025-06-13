@@ -15,7 +15,8 @@ import com.izanhuang.cafe_hunter_android.core.ui.screens.ProfileScreen
 fun NavHostContainer(
     navController: NavHostController,
     padding: PaddingValues,
-    mapViewModel: MapViewModel
+    mapViewModel: MapViewModel,
+    isMapView: Boolean
 ) {
 
     NavHost(
@@ -31,7 +32,7 @@ fun NavHostContainer(
 
             // route : Home
             composable("home") {
-                HomeScreen(mapViewModel = mapViewModel)
+                HomeScreen(mapViewModel = mapViewModel, isMapView = isMapView)
             }
 
             // route : profile
