@@ -8,8 +8,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.izanhuang.cafe_hunter_android.core.domain.MapViewModel
+import com.izanhuang.cafe_hunter_android.core.ui.screens.AuthScreen
 import com.izanhuang.cafe_hunter_android.core.ui.screens.HomeScreen
-import com.izanhuang.cafe_hunter_android.core.ui.screens.ProfileScreen
 
 @Composable
 fun NavHostContainer(
@@ -35,9 +35,9 @@ fun NavHostContainer(
                 HomeScreen(mapViewModel = mapViewModel, isMapView = isMapView)
             }
 
-            // route : profile
-            composable("profile") {
-                ProfileScreen()
+            // route : auth
+            composable("auth") {
+                AuthScreen()
             }
         })
 }

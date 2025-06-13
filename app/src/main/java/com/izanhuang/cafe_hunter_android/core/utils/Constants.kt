@@ -14,9 +14,9 @@ object Constants {
         ),
         // Profile screen
         BottomNavItem(
-            label = "Profile",
+            label = "Auth",
             icon = Icons.Filled.Person,
-            route = "profile"
+            route = "auth"
         )
     )
     // Define a constant for the location permission request code
