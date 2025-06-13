@@ -1,5 +1,6 @@
 package com.izanhuang.cafe_hunter_android.core.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,6 +31,12 @@ fun CafeCard(place: PlaceResult, onClick: () -> Unit, modifier: Modifier = Modif
             .padding(8.dp)
             .fillMaxWidth()
             .clickable { onClick() },
+        colors = CardColors(
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            containerColor = MaterialTheme.colorScheme.primary,
+            disabledContainerColor = Color.Gray,
+            disabledContentColor = Color.LightGray
+        ),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
     ) {
@@ -60,18 +68,28 @@ fun CafeCard(place: PlaceResult, onClick: () -> Unit, modifier: Modifier = Modif
                 Text(
                     text = "⭐ $it (${place.user_ratings_total ?: 0} reviews)",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
             }
 
-            Text(text = place.vicinity, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+            Text(
+                text = place.vicinity,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
 
             place.opening_hours?.let {
                 val openStatus = if (it.open_now) "Open now" else "Closed"
                 Text(
                     text = openStatus,
-                    color = if (it.open_now) Color(0xFF388E3C) else Color(0xFFD32F2F),
-                    style = MaterialTheme.typography.bodySmall
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = modifier
+                        .background(
+                            color = if (it.open_now) Color(0xFF388E3C) else Color(0xFFD32F2F),
+                            shape = RoundedCornerShape(4.dp)
+                        )
+                        .padding(horizontal = 8.dp, vertical = 2.dp),
                 )
             }
         }

@@ -7,6 +7,8 @@ import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,7 +33,7 @@ import com.izanhuang.cafe_hunter_android.core.ui.components.NavHostContainer
 import com.izanhuang.cafe_hunter_android.core.ui.theme.CafehunterandroidTheme
 import com.izanhuang.cafe_hunter_android.core.utils.Constants
 
-val LocalAuthViewModel = staticCompositionLocalOf<AuthViewModel>{ error("AuthViewModel not set") }
+val LocalAuthViewModel = staticCompositionLocalOf<AuthViewModel> { error("AuthViewModel not set") }
 
 class MainActivity : FragmentActivity() {
     // Initialize the location provider client
@@ -90,7 +92,15 @@ class MainActivity : FragmentActivity() {
                         // Scaffold Component
                         Scaffold(
                             floatingActionButton = {
-                                Button(onClick = { isMapView = !isMapView }) {
+                                Button(
+                                    onClick = { isMapView = !isMapView },
+                                    colors = ButtonColors(
+                                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                                        containerColor = MaterialTheme.colorScheme.primary,
+                                        disabledContainerColor = Color.Gray,
+                                        disabledContentColor = Color.LightGray
+                                    )
+                                ) {
                                     Text("List View")
                                 }
                             },

@@ -1,13 +1,13 @@
 package com.izanhuang.cafe_hunter_android.core.ui.components
 
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.izanhuang.cafe_hunter_android.core.utils.Constants
@@ -18,7 +18,7 @@ fun BottomNavigationBar(navController: NavHostController) {
     NavigationBar(
 
         // set background color
-        containerColor = Color(0xFF0F9D58)
+        containerColor =  MaterialTheme.colorScheme.surface
     ) {
 
         // observe the backstack
@@ -54,10 +54,10 @@ fun BottomNavigationBar(navController: NavHostController) {
                 alwaysShowLabel = false,
 
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Color.White, // Icon color when selected
-                    unselectedIconColor = Color.White, // Icon color when not selected
-                    selectedTextColor = Color.White, // Label color when selected
-                    indicatorColor = Color(0xFF195334) // Highlight color for selected item
+                    selectedIconColor = MaterialTheme.colorScheme.onPrimary, // Icon color when selected
+                    unselectedIconColor = MaterialTheme.colorScheme.onPrimary, // Icon color when not selected
+                    selectedTextColor =  MaterialTheme.colorScheme.primary, // Label color when selected
+                    indicatorColor =  MaterialTheme.colorScheme.primary // Highlight color for selected item
                 )
             )
         }

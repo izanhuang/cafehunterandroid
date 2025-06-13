@@ -13,11 +13,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,6 +36,12 @@ fun ReviewCard(review: Review) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
+        colors = CardColors(
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            containerColor = MaterialTheme.colorScheme.primary,
+            disabledContainerColor = Color.Gray,
+            disabledContentColor = Color.LightGray
+        ),
         shape = RoundedCornerShape(12.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -42,11 +51,12 @@ fun ReviewCard(review: Review) {
                 Box(
                     modifier = Modifier
                         .size(40.dp)
-                        .background(Color(0xFFE0E0E0), CircleShape),
+                        .background(MaterialTheme.colorScheme.secondary, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = initials,
+                        color = MaterialTheme.colorScheme.onSecondary,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
                     )
@@ -56,14 +66,15 @@ fun ReviewCard(review: Review) {
 
                 Column {
                     Text(
-                        text = "${review.firstName} ${review.lastName}",
+//                        text = "${review.firstName} ${review.lastName}",
+                        text = "Anonymous",
                         fontWeight = FontWeight.Medium,
                         fontSize = 14.sp
                     )
                     Text(
                         text = relativeTime,
                         fontSize = 12.sp,
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onSecondary
                     )
                 }
             }
@@ -83,7 +94,7 @@ fun ReviewCard(review: Review) {
             if (review.description.isNotBlank()) {
                 Text(
                     text = "\"${review.description}\"",
-                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                    fontStyle = FontStyle.Italic
                 )
             }
 
@@ -104,13 +115,13 @@ fun ReviewCard(review: Review) {
 fun ReviewTag(text: String) {
     Box(
         modifier = Modifier
-            .background(Color(0xFFEDE7F6), shape = RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(16.dp))
             .padding(horizontal = 12.dp, vertical = 6.dp)
     ) {
         Text(
             text = text,
             fontSize = 12.sp,
-            color = Color(0xFF5E35B1),
+            color = MaterialTheme.colorScheme.onSecondary,
             fontWeight = FontWeight.Medium
         )
     }
