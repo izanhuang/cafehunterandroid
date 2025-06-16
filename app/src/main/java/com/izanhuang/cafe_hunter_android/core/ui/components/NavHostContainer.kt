@@ -18,24 +18,14 @@ fun NavHostContainer(
     mapViewModel: MapViewModel,
     isMapView: Boolean
 ) {
-
     NavHost(
         navController = navController,
-
-        // set the start destination as home
         startDestination = "home",
-
-        // Set the padding provided by scaffold
         modifier = Modifier.padding(paddingValues = padding),
-
         builder = {
-
-            // route : Home
             composable("home") {
                 HomeScreen(mapViewModel = mapViewModel, isMapView = isMapView)
             }
-
-            // route : auth
             composable("auth") {
                 AuthScreen()
             }

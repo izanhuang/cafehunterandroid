@@ -6,12 +6,9 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -30,6 +28,7 @@ import com.izanhuang.cafe_hunter_android.core.domain.AuthViewModel
 import com.izanhuang.cafe_hunter_android.core.domain.MapViewModel
 import com.izanhuang.cafe_hunter_android.core.ui.components.BottomNavigationBar
 import com.izanhuang.cafe_hunter_android.core.ui.components.NavHostContainer
+import com.izanhuang.cafe_hunter_android.core.ui.components.ViewModeButton
 import com.izanhuang.cafe_hunter_android.core.ui.theme.CafehunterandroidTheme
 import com.izanhuang.cafe_hunter_android.core.utils.Constants
 
@@ -86,29 +85,26 @@ class MainActivity : FragmentActivity() {
             CompositionLocalProvider(LocalAuthViewModel provides authViewModel) {
                 CafehunterandroidTheme(dynamicColor = false, darkTheme = false) {
                     val navController = rememberNavController()
+                    val navBackStackEntry by navController.currentBackStackEntryAsState()
+                    val currentRoute = navBackStackEntry?.destination?.route
                     var isMapView by remember { mutableStateOf(true) }
 
                     Surface(color = Color.White) {
-                        // Scaffold Component
                         Scaffold(
                             floatingActionButton = {
-                                Button(
-                                    onClick = { isMapView = !isMapView },
-                                    colors = ButtonColors(
-                                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                                        containerColor = MaterialTheme.colorScheme.primary,
-                                        disabledContainerColor = Color.Gray,
-                                        disabledContentColor = Color.LightGray
-                                    )
-                                ) {
-                                    Text("List View")
+                                if (currentRoute === Constants.BottomNavItems.first().route) {
+                                    ViewModeButton(
+                                        isMapView = isMapView,
+                                        updateIsViewMode = { isMapView = !isMapView })
                                 }
                             },
-                            // Bottom navigation
+                            floatingActionButtonPosition = FabPosition.Start,
                             bottomBar = {
-                                BottomNavigationBar(navController = navController)
+                                BottomNavigationBar(
+                                    navController = navController,
+                                    currentRoute = currentRoute
+                                )
                             }, content = { padding ->
-                                // Nav host: where screens are placed
                                 NavHostContainer(
                                     navController = navController,
                                     padding = padding,
