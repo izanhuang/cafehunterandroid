@@ -38,10 +38,6 @@ fun ProfileScreen(authViewModel: AuthViewModel) {
     val showFirstNameDialog = remember { mutableStateOf(false) }
     val showLastNameDialog = remember { mutableStateOf(false) }
 
-    val initials = listOfNotNull(firstName.value.firstOrNull(), lastName.value.firstOrNull())
-        .joinToString("")
-        .uppercase()
-
     LaunchedEffect(user) {
         user.value?.uid?.let { uid ->
             authViewModel.fetchUserProfile(uid) { first, last ->
@@ -51,7 +47,11 @@ fun ProfileScreen(authViewModel: AuthViewModel) {
         }
     }
 
-    Column(Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        Modifier
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         // Profile Picture
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
