@@ -63,7 +63,6 @@ fun CafeDetailScreen(
         } else {
             ReviewForm(
                 place = place,
-                onClose = { showReviewForm = false },
                 reviewViewModel = reviewViewModel
             )
         }

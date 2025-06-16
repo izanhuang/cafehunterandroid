@@ -49,10 +49,6 @@ fun CafeDetails(
 ) {
     val reviews = reviewViewModel.reviews
 
-    LaunchedEffect(place.place_id) {
-        reviewViewModel.loadReviews(place.place_id)
-    }
-
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -86,11 +82,11 @@ fun CafeDetails(
 
         }
 
-//        item {
-//            LaunchedEffect(Unit) {
-//                reviewViewModel.loadReviews(cafeId = place.place_id)
-//            }
-//        }
+        item {
+            LaunchedEffect(Unit) {
+                reviewViewModel.loadReviews(cafeId = place.place_id)
+            }
+        }
     }
 }
 

@@ -24,8 +24,6 @@ class ReviewViewModel(private val db: FirebaseFirestore = FirebaseFirestore.getI
     private val _reviews = mutableStateListOf<ReviewWithUser>()
     val reviews: List<ReviewWithUser> get() = _reviews
 
-    private val userCache = mutableMapOf<String, User>()
-
     fun submitReview(place: PlaceResult, review: Review, userId: String) {
         val cafesRef = db.collection("cafes")
 
@@ -84,26 +82,32 @@ class ReviewViewModel(private val db: FirebaseFirestore = FirebaseFirestore.getI
 
         reviewRef.set(reviewData).addOnSuccessListener {
             _reviewSubmissionState.value = true
-            loadReviews(cafeId) // refresh after submission
+            loadReviews(cafeId, reset = true) // refresh after submission
         }.addOnFailureListener {
             _reviewSubmissionState.value = false
         }
     }
 
     fun loadReviews(cafeId: String, limit: Long = 10, reset: Boolean = false) {
-//        if (reset) {
-//            lastVisibleReview = null
-//            _reviews.clear()
-//        }
+        if (reset) {
+            lastVisibleReview = null
+            _reviews.clear()
+        }
 
-        val reviewsQuery = db.collection("cafes")
+        var reviewsQuery = db.collection("cafes")
             .document(cafeId)
             .collection("reviews")
             .orderBy("created_at", Query.Direction.DESCENDING)
             .limit(limit)
 
+        lastVisibleReview?.let {
+            reviewsQuery = reviewsQuery.startAfter(it)
+        }
+
         reviewsQuery.get()
             .addOnSuccessListener { reviewsSnapshot ->
+                if (reviewsSnapshot.isEmpty) return@addOnSuccessListener
+
                 reviewsSnapshot.documents.mapNotNull { reviewDoc ->
                     val review = reviewDoc.toReview()
                     if (review !== null) {
@@ -120,6 +124,8 @@ class ReviewViewModel(private val db: FirebaseFirestore = FirebaseFirestore.getI
                         }
                     }
                 }
+
+                lastVisibleReview = reviewsSnapshot.documents.last()
             }
     }
 }
