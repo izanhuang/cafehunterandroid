@@ -1,4 +1,5 @@
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +11,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,6 +45,7 @@ fun ReviewForm(
 
     val reviewText = remember { mutableStateOf("") }
     val submitting = !reviewViewModel.reviewSubmissionState.value
+    val showRatingError = remember { mutableStateOf(false) }
 
     val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "anonymous"
 
@@ -55,7 +58,19 @@ fun ReviewForm(
         item { IconRatingRow(foodRating, Icons.Default.Menu, "Food") }
         item { IconRatingRow(spaceRating, Icons.Default.Star, "Space / Vibes") }
         item { IconRatingRow(loudnessRating, Icons.Default.Star, "Loudness") }
-        item { IconRatingRow(overallRating, Icons.Default.Star, "Overall") }
+
+        item {
+            Column {
+                IconRatingRow(overallRating, Icons.Default.Star, "Overall")
+                if (showRatingError.value && overallRating.value == 0) {
+                    Text(
+                        text = "Overall rating is required.",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            }
+        }
 
         item { ToggleRow("Busy?", isBusy) }
         item { ToggleRow("Cozy?", isCozy) }
@@ -76,6 +91,11 @@ fun ReviewForm(
         item {
             Button(
                 onClick = {
+                    if (overallRating.value == 0) {
+                        showRatingError.value = true
+                        return@Button
+                    }
+
                     val review = Review(
                         coffeeRating = coffeeRating.value,
                         foodRating = foodRating.value,
@@ -88,6 +108,8 @@ fun ReviewForm(
                         wouldRecommend = wouldRecommend.value,
                         description = reviewText.value
                     )
+
+                    showRatingError.value = false
                     reviewViewModel.submitReview(place, review, userId)
                 },
                 modifier = Modifier.fillMaxWidth(),

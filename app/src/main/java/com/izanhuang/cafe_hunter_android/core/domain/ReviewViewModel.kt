@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
+import com.google.firebase.firestore.Query
 import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
 import com.izanhuang.cafe_hunter_android.core.data.Review
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -85,6 +86,7 @@ class ReviewViewModel(private val db: FirebaseFirestore = FirebaseFirestore.getI
         db.collection("cafes")
             .document(cafeId)
             .collection("reviews")
+            .orderBy("created_at", Query.Direction.DESCENDING)
             .get()
             .addOnSuccessListener { snapshot ->
                 val reviews = snapshot.documents.mapNotNull { doc ->
