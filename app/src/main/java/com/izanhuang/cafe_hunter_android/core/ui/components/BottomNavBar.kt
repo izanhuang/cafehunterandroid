@@ -30,9 +30,9 @@ fun BottomNavigationBar(navController: NavHostController, currentRoute: String?)
                 alwaysShowLabel = false,
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.onPrimary,
-                    unselectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                    unselectedIconColor = MaterialTheme.colorScheme.primary,
                     selectedTextColor = MaterialTheme.colorScheme.primary,
-                    indicatorColor = MaterialTheme.colorScheme.primary
+                    indicatorColor =  MaterialTheme.colorScheme.primary,
                 )
             )
         }
