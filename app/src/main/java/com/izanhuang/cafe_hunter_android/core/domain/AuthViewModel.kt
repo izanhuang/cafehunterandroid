@@ -106,4 +106,19 @@ class AuthViewModel : ViewModel() {
         auth.signOut()
         _user.value = null
     }
+
+    fun fetchUserProfile(uid: String, onLoaded: (String?, String?) -> Unit) {
+        FirebaseFirestore.getInstance().collection("users").document(uid).get()
+            .addOnSuccessListener { doc ->
+                val first = doc.getString("firstName")
+                val last = doc.getString("lastName")
+                onLoaded(first, last)
+            }
+    }
+
+    fun updateUserField(field: String, value: String) {
+        val uid = auth.currentUser?.uid ?: return
+        FirebaseFirestore.getInstance().collection("users").document(uid)
+            .update(field, value)
+    }
 }
