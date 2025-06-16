@@ -24,7 +24,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,7 +47,7 @@ fun CafeDetails(
     padding: PaddingValues,
     reviewViewModel: ReviewViewModel
 ) {
-    val reviews by reviewViewModel.cafeReviews.collectAsState()
+    val reviews = reviewViewModel.reviews
 
     LaunchedEffect(place.place_id) {
         reviewViewModel.loadReviews(place.place_id)
@@ -86,6 +85,12 @@ fun CafeDetails(
             item { ReviewCard(review) }
 
         }
+
+//        item {
+//            LaunchedEffect(Unit) {
+//                reviewViewModel.loadReviews(cafeId = place.place_id)
+//            }
+//        }
     }
 }
 

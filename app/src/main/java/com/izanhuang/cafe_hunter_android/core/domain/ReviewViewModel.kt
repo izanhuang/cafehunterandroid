@@ -1,25 +1,30 @@
 package com.izanhuang.cafe_hunter_android.core.domain
 
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.firestore.Query
 import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
 import com.izanhuang.cafe_hunter_android.core.data.Review
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.izanhuang.cafe_hunter_android.core.data.ReviewWithUser
+import com.izanhuang.cafe_hunter_android.core.data.User
 
-class ReviewViewModel(private val db: FirebaseFirestore = FirebaseFirestore.getInstance()) : ViewModel() {
+class ReviewViewModel(private val db: FirebaseFirestore = FirebaseFirestore.getInstance()) :
+    ViewModel() {
 
     private val _reviewSubmissionState = mutableStateOf(false)
     val reviewSubmissionState: State<Boolean> = _reviewSubmissionState
 
-    private val _cafeReviews = MutableStateFlow<List<Review>>(emptyList())
-    val cafeReviews: StateFlow<List<Review>> = _cafeReviews.asStateFlow()
+    private var lastVisibleReview: DocumentSnapshot? = null
+    private val _reviews = mutableStateListOf<ReviewWithUser>()
+    val reviews: List<ReviewWithUser> get() = _reviews
+
+    private val userCache = mutableMapOf<String, User>()
 
     fun submitReview(place: PlaceResult, review: Review, userId: String) {
         val cafesRef = db.collection("cafes")
@@ -34,7 +39,10 @@ class ReviewViewModel(private val db: FirebaseFirestore = FirebaseFirestore.getI
                     val newCafe = mapOf(
                         "address" to place.vicinity,
                         "createdAt" to Timestamp.now(),
-                        "geopoint" to GeoPoint(place.geometry.location.lat, place.geometry.location.lng),
+                        "geopoint" to GeoPoint(
+                            place.geometry.location.lat,
+                            place.geometry.location.lng
+                        ),
                         "name" to place.name,
                         "photos" to place.photos
                     )
@@ -82,37 +90,62 @@ class ReviewViewModel(private val db: FirebaseFirestore = FirebaseFirestore.getI
         }
     }
 
-    fun loadReviews(cafeId: String) {
-        db.collection("cafes")
+    fun loadReviews(cafeId: String, limit: Long = 10, reset: Boolean = false) {
+//        if (reset) {
+//            lastVisibleReview = null
+//            _reviews.clear()
+//        }
+
+        val reviewsQuery = db.collection("cafes")
             .document(cafeId)
             .collection("reviews")
             .orderBy("created_at", Query.Direction.DESCENDING)
-            .get()
-            .addOnSuccessListener { snapshot ->
-                val reviews = snapshot.documents.mapNotNull { doc ->
-                    doc.toReview()
+            .limit(limit)
+
+        reviewsQuery.get()
+            .addOnSuccessListener { reviewsSnapshot ->
+                reviewsSnapshot.documents.mapNotNull { reviewDoc ->
+                    val review = reviewDoc.toReview()
+                    if (review !== null) {
+                        val userQuery = db.collection("users").document(review.user_id)
+
+                        userQuery.get().addOnSuccessListener { userSnapshot ->
+                            val user = userSnapshot.toObject(User::class.java)
+                            val reviewWithUser = ReviewWithUser(
+                                review = review,
+                                userFirstName = user?.firstName,
+                                userLastName = user?.lastName
+                            )
+                            _reviews.add(reviewWithUser)
+                        }
+                    }
                 }
-                _cafeReviews.value = reviews
             }
     }
+}
 
-    private fun com.google.firebase.firestore.DocumentSnapshot.toReview(): Review? {
-        return try {
-            Review(
-                coffeeRating = getLong("coffee_rating")?.toInt() ?: 0,
-                foodRating = getLong("food_rating")?.toInt() ?: 0,
-                spaceRating = getLong("space_rating")?.toInt() ?: 0,
-                loudness = getLong("loudness")?.toInt() ?: 0,
-                rating = getLong("rating")?.toInt() ?: 0,
-                isBusy = getBoolean("is_busy") ?: false,
-                isCozy = getBoolean("is_cozy") ?: false,
-                isWorkFriendly = getBoolean("is_work_friendly") ?: false,
-                wouldRecommend = getBoolean("would_recommend") ?: false,
-                description = getString("description") ?: "",
-                created_at = getTimestamp("created_at")?.toDate()?.time ?: System.currentTimeMillis(),
-            )
-        } catch (e: Exception) {
-            null
+private fun DocumentSnapshot.toReview(): Review? {
+    return try {
+        getDocumentReference("user_id")?.let { userDocRef ->
+            getDocumentReference("cafe_id")?.let { cafeDocRef ->
+                Review(
+                    coffeeRating = getLong("coffee_rating")?.toInt() ?: 0,
+                    foodRating = getLong("food_rating")?.toInt() ?: 0,
+                    spaceRating = getLong("space_rating")?.toInt() ?: 0,
+                    loudness = getLong("loudness")?.toInt() ?: 0,
+                    rating = getLong("rating")?.toInt() ?: 0,
+                    isBusy = getBoolean("is_busy") ?: false,
+                    isCozy = getBoolean("is_cozy") ?: false,
+                    isWorkFriendly = getBoolean("is_work_friendly") ?: false,
+                    wouldRecommend = getBoolean("would_recommend") ?: false,
+                    description = getString("description") ?: "",
+                    user_id = userDocRef.id,
+                    cafe_id = cafeDocRef.id,
+                    created_at = getTimestamp("created_at") ?: Timestamp.now(),
+                )
+            }
         }
+    } catch (e: Exception) {
+        null
     }
 }

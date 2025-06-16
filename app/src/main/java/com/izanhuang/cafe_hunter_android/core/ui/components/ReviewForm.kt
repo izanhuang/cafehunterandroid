@@ -19,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
 import com.izanhuang.cafe_hunter_android.core.data.Review
@@ -29,7 +30,6 @@ import com.izanhuang.cafe_hunter_android.core.ui.components.ToggleRow
 @Composable
 fun ReviewForm(
     place: PlaceResult,
-    onClose: () -> Unit,
     reviewViewModel: ReviewViewModel
 ) {
     val coffeeRating = remember { mutableStateOf(0) }
@@ -106,7 +106,8 @@ fun ReviewForm(
                         isCozy = isCozy.value,
                         isWorkFriendly = isWorkFriendly.value,
                         wouldRecommend = wouldRecommend.value,
-                        description = reviewText.value
+                        description = reviewText.value,
+                        created_at = Timestamp.now()
                     )
 
                     showRatingError.value = false

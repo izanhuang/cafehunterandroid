@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -12,8 +13,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,13 +28,12 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.izanhuang.cafe_hunter_android.core.data.Review
+import com.izanhuang.cafe_hunter_android.core.data.ReviewWithUser
 import com.izanhuang.cafe_hunter_android.core.utils.getCustomRelativeTimeString
 
 @Composable
-fun ReviewCard(review: Review) {
-    val initials = "${review.firstName.firstOrNull()?.uppercase() ?: ""}${review.lastName.firstOrNull()?.uppercase() ?: ""}"
-    val relativeTime = getCustomRelativeTimeString(review.created_at)
+fun ReviewCard(reviewWithUser: ReviewWithUser) {
+    val relativeTime = getCustomRelativeTimeString(reviewWithUser.review.created_at.toDate().time)
 
     Card(
         modifier = Modifier
@@ -54,20 +57,20 @@ fun ReviewCard(review: Review) {
                         .background(MaterialTheme.colorScheme.secondary, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = initials,
-                        color = MaterialTheme.colorScheme.onSecondary,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "Profile",
+                        tint = MaterialTheme.colorScheme.onSecondary,
+                        modifier = Modifier.fillMaxSize(0.8f)
                     )
                 }
 
                 Spacer(modifier = Modifier.width(12.dp))
 
+                val reviewName = "${reviewWithUser.userFirstName} ${reviewWithUser.userLastName}"
                 Column {
                     Text(
-//                        text = "${review.firstName} ${review.lastName}",
-                        text = "Anonymous",
+                        text = reviewName.ifBlank { "Anonymous" },
                         fontWeight = FontWeight.Medium,
                         fontSize = 14.sp
                     )
@@ -82,18 +85,18 @@ fun ReviewCard(review: Review) {
             Spacer(modifier = Modifier.height(12.dp))
 
             // Emoji Ratings
-            Text("☕ Coffee: ${review.coffeeRating}/5")
-            Text("🍽️ Food: ${review.foodRating}/5")
-            Text("🪑 Space: ${review.spaceRating}/5")
-            Text("🔊 Loudness: ${review.loudness}/5")
-            Text("⭐ Overall: ${review.rating}/5", fontWeight = FontWeight.Bold)
+            Text("☕ Coffee: ${reviewWithUser.review.coffeeRating}/5")
+            Text("🍽️ Food: ${reviewWithUser.review.foodRating}/5")
+            Text("🪑 Space: ${reviewWithUser.review.spaceRating}/5")
+            Text("🔊 Loudness: ${reviewWithUser.review.loudness}/5")
+            Text("⭐ Overall: ${reviewWithUser.review.rating}/5", fontWeight = FontWeight.Bold)
 
             Spacer(modifier = Modifier.height(8.dp))
 
             // Description
-            if (review.description.isNotBlank()) {
+            if (reviewWithUser.review.description.isNotBlank()) {
                 Text(
-                    text = "\"${review.description}\"",
+                    text = "\"${reviewWithUser.review.description}\"",
                     fontStyle = FontStyle.Italic
                 )
             }
@@ -102,10 +105,10 @@ fun ReviewCard(review: Review) {
 
             // Tags
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                if (review.isCozy) ReviewTag("Cozy")
-                if (review.isBusy) ReviewTag("Busy")
-                if (review.isWorkFriendly) ReviewTag("Work Friendly")
-                if (review.wouldRecommend) ReviewTag("Would Recommend")
+                if (reviewWithUser.review.isCozy) ReviewTag("Cozy")
+                if (reviewWithUser.review.isBusy) ReviewTag("Busy")
+                if (reviewWithUser.review.isWorkFriendly) ReviewTag("Work Friendly")
+                if (reviewWithUser.review.wouldRecommend) ReviewTag("Would Recommend")
             }
         }
     }
