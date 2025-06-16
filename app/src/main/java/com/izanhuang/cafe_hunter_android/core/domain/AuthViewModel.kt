@@ -22,6 +22,14 @@ class AuthViewModel : ViewModel() {
     private val _user = MutableStateFlow(auth.currentUser)
     val user: StateFlow<FirebaseUser?> = _user.asStateFlow()
 
+    init {
+        // Called once when ViewModel is created
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            _user.value = currentUser
+        }
+    }
+
     companion object {
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")

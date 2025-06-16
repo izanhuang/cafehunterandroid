@@ -59,7 +59,7 @@ fun AuthScreen(authViewModel: AuthViewModel = AuthViewModel()) {
 fun ProfileScreen(user: FirebaseUser, authViewModel: AuthViewModel) {
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         user.photoUrl?.let { AsyncImage(model = it, contentDescription = "Profile picture") }
-        Text("${user.displayName ?: user.email}")
+        Text("${user.email}")
         Button(onClick = { /* edit profile logic */ }) { Text("Edit Profile") }
 //        Button(onClick = { FirebaseAuth.getInstance().signOut() }) { Text("Sign Out") }
         Button(onClick = {
