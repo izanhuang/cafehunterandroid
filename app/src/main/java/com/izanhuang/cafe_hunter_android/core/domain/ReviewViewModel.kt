@@ -107,6 +107,9 @@ class ReviewViewModel(private val db: FirebaseFirestore = FirebaseFirestore.getI
             .addOnSuccessListener { reviewsSnapshot ->
                 if (reviewsSnapshot.isEmpty) return@addOnSuccessListener
 
+                val tempList = mutableListOf<ReviewWithUser>()
+                var pending = reviewsSnapshot.size()
+
                 reviewsSnapshot.documents.forEach { doc ->
                     val review = doc.toReview() ?: return@forEach
                     db.collection("users").document(review.user_id).get()
@@ -117,7 +120,14 @@ class ReviewViewModel(private val db: FirebaseFirestore = FirebaseFirestore.getI
                                 userFirstName = user?.firstName,
                                 userLastName = user?.lastName
                             )
-                            _reviews.add(reviewWithUser)
+                            tempList.add(reviewWithUser)
+
+                            pending--
+                            if (pending == 0) {
+                                // Sort before posting to state
+                                tempList.sortByDescending { it.review.created_at }
+                                _reviews.addAll(tempList)
+                            }
                         }
                 }
 
