@@ -8,9 +8,9 @@ interface PlacesService {
     @GET("place/nearbysearch/json")
     suspend fun getNearbyCafes(
         @Query("location") location: String, // "lat,lng"
-//        @Query("radius") radius: Int = 1500, // meters
+        @Query("radius") radius: Int = 750, // meters
 //        @Query("type") type: String = "cafe",
-        @Query("rankby") rankBy: String = "distance",
+//        @Query("rankby") rankBy: String = "distance",
         @Query("key") apiKey: String,
         @Query("keyword") keyword: String = "cafe|coffee|coffee shop|bakery|espresso|tea|bubble tea|boba|dessert|bakery|milk tea"
     ): PlacesResponse
