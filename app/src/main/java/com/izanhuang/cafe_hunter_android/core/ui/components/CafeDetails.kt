@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
@@ -28,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,6 +50,24 @@ fun CafeDetails(
     reviewViewModel: ReviewViewModel
 ) {
     val reviews = reviewViewModel.reviews
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(place.place_id) {
+        reviewViewModel.loadReviews(cafeId = place.place_id, reset = true)
+    }
+
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo }
+            .collect { visibleItems ->
+                val lastVisibleItem = visibleItems.lastOrNull()
+                val totalItems = listState.layoutInfo.totalItemsCount
+
+                if (lastVisibleItem != null && lastVisibleItem.index >= totalItems - 3) {
+                    reviewViewModel.loadReviews(cafeId = place.place_id)
+                }
+            }
+    }
+
 
     LazyColumn(
         modifier = Modifier
@@ -80,12 +100,6 @@ fun CafeDetails(
         reviews.forEach { review ->
             item { ReviewCard(review) }
 
-        }
-
-        item {
-            LaunchedEffect(Unit) {
-                reviewViewModel.loadReviews(cafeId = place.place_id)
-            }
         }
     }
 }

@@ -82,7 +82,6 @@ class ReviewViewModel(private val db: FirebaseFirestore = FirebaseFirestore.getI
 
         reviewRef.set(reviewData).addOnSuccessListener {
             _reviewSubmissionState.value = true
-            loadReviews(cafeId, reset = true) // refresh after submission
         }.addOnFailureListener {
             _reviewSubmissionState.value = false
         }
@@ -108,12 +107,10 @@ class ReviewViewModel(private val db: FirebaseFirestore = FirebaseFirestore.getI
             .addOnSuccessListener { reviewsSnapshot ->
                 if (reviewsSnapshot.isEmpty) return@addOnSuccessListener
 
-                reviewsSnapshot.documents.mapNotNull { reviewDoc ->
-                    val review = reviewDoc.toReview()
-                    if (review !== null) {
-                        val userQuery = db.collection("users").document(review.user_id)
-
-                        userQuery.get().addOnSuccessListener { userSnapshot ->
+                reviewsSnapshot.documents.forEach { doc ->
+                    val review = doc.toReview() ?: return@forEach
+                    db.collection("users").document(review.user_id).get()
+                        .addOnSuccessListener { userSnapshot ->
                             val user = userSnapshot.toObject(User::class.java)
                             val reviewWithUser = ReviewWithUser(
                                 review = review,
@@ -122,7 +119,6 @@ class ReviewViewModel(private val db: FirebaseFirestore = FirebaseFirestore.getI
                             )
                             _reviews.add(reviewWithUser)
                         }
-                    }
                 }
 
                 lastVisibleReview = reviewsSnapshot.documents.last()
