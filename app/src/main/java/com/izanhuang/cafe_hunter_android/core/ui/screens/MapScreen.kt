@@ -104,6 +104,7 @@ fun MapScreen(
     }
 
     fun onMarkerClick(cafe: PlaceResult): Boolean {
+        showReviewForm = false
         selectedCafe = cafe
         scope.launch { scaffoldState.bottomSheetState.partialExpand() }
 

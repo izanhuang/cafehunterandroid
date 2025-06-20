@@ -71,7 +71,6 @@ fun CafeDetails(
             }
     }
 
-
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
