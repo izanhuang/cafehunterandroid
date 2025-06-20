@@ -16,10 +16,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -31,8 +34,13 @@ import com.izanhuang.cafe_hunter_android.core.domain.AuthViewModel
 @Composable
 fun LoginForm(authViewModel: AuthViewModel) {
     val context = LocalContext.current
-    val email = remember { mutableStateOf("") }
-    val password = remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
+    var emailError by remember { mutableStateOf<String?>(null) }
+    var passwordError by remember { mutableStateOf<String?>(null) }
+
+    val isFormValid = email.isNotBlank() && password.isNotBlank()
 
     val launcher = rememberGoogleSignInLauncher { authResult ->
         if (authResult != null) {
@@ -54,29 +62,67 @@ fun LoginForm(authViewModel: AuthViewModel) {
         Text("Login", style = MaterialTheme.typography.titleLarge)
 
         OutlinedTextField(
-            value = email.value,
-            onValueChange = { email.value = it },
+            value = email,
+            onValueChange = {
+                email = it
+                emailError = null
+            },
             label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+            isError = emailError != null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
         )
+        if (emailError != null) {
+            Text(emailError!!, color = Color.Red, style = MaterialTheme.typography.bodySmall)
+        }
 
         OutlinedTextField(
-            value = password.value,
-            onValueChange = { password.value = it },
+            value = password,
+            onValueChange = {
+                password = it
+                passwordError = null
+            },
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+            isError = passwordError != null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
         )
+        if (passwordError != null) {
+            Text(passwordError!!, color = Color.Red, style = MaterialTheme.typography.bodySmall)
+        }
 
         Button(
             onClick = {
-                authViewModel.login(email.value, password.value) { success, error ->
-                    if (!success) {
-                        Toast.makeText(context, error ?: "Login failed", Toast.LENGTH_SHORT).show()
+                var hasError = false
+
+                if (email.isBlank()) {
+                    emailError = "Email is required"
+                    hasError = true
+                } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    emailError = "Enter a valid email"
+                    hasError = true
+                }
+
+                if (password.isBlank()) {
+                    passwordError = "Password is required"
+                    hasError = true
+                }
+
+                if (!hasError) {
+                    authViewModel.login(email, password) { success, error ->
+                        if (!success) {
+                            Toast.makeText(context, error ?: "Login failed", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             },
-            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+            enabled = isFormValid,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
         ) {
             Text("Login")
         }
