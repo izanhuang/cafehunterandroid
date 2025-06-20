@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -55,7 +54,7 @@ fun ReviewForm(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item { IconRatingRow(coffeeRating, Icons.Default.Star, "Coffee") }
-        item { IconRatingRow(foodRating, Icons.Default.Menu, "Food") }
+        item { IconRatingRow(foodRating, Icons.Default.Star, "Food") }
         item { IconRatingRow(spaceRating, Icons.Default.Star, "Space / Vibes") }
         item { IconRatingRow(loudnessRating, Icons.Default.Star, "Loudness") }
 

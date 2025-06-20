@@ -85,10 +85,18 @@ fun ReviewCard(reviewWithUser: ReviewWithUser) {
             Spacer(modifier = Modifier.height(12.dp))
 
             // Emoji Ratings
-            Text("☕ Coffee: ${reviewWithUser.review.coffeeRating}/5")
-            Text("🍽️ Food: ${reviewWithUser.review.foodRating}/5")
-            Text("🪑 Space: ${reviewWithUser.review.spaceRating}/5")
-            Text("🔊 Loudness: ${reviewWithUser.review.loudness}/5")
+            if (reviewWithUser.review.coffeeRating in 1..5) {
+                Text("☕ Coffee: ${reviewWithUser.review.coffeeRating}/5")
+            }
+            if (reviewWithUser.review.foodRating in 1..5) {
+                Text("🍽️ Food: ${reviewWithUser.review.foodRating}/5")
+            }
+            if (reviewWithUser.review.spaceRating in 1..5) {
+                Text("🪑 Space: ${reviewWithUser.review.spaceRating}/5")
+            }
+            if (reviewWithUser.review.loudness in 1..5) {
+                Text("🔊 Loudness: ${reviewWithUser.review.loudness}/5")
+            }
             Text("⭐ Overall: ${reviewWithUser.review.rating}/5", fontWeight = FontWeight.Bold)
 
             Spacer(modifier = Modifier.height(8.dp))
