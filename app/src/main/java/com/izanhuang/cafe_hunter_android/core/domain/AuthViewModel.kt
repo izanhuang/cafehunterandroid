@@ -10,9 +10,13 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.izanhuang.cafe_hunter_android.core.data.User
+import com.izanhuang.cafe_hunter_android.core.utils.Resource
+import com.izanhuang.cafe_hunter_android.core.utils.mapSuccess
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class AuthViewModel : ViewModel() {
 
@@ -21,6 +25,9 @@ class AuthViewModel : ViewModel() {
 
     private val _user = MutableStateFlow(auth.currentUser)
     val user: StateFlow<FirebaseUser?> = _user.asStateFlow()
+
+    private val _userDetails = MutableStateFlow<Resource<User>>(Resource.Loading)
+    val userDetails: StateFlow<Resource<User>> = _userDetails
 
     init {
         // Called once when ViewModel is created
@@ -107,16 +114,47 @@ class AuthViewModel : ViewModel() {
         _user.value = null
     }
 
-    fun fetchUserProfile(uid: String, onLoaded: (String?, String?) -> Unit) {
-        FirebaseFirestore.getInstance().collection("users").document(uid).get()
-            .addOnSuccessListener { doc ->
-                val first = doc.getString("firstName")
-                val last = doc.getString("lastName")
-                onLoaded(first, last)
+    fun fetchUserProfile() {
+        if (_userDetails.value !is Resource.Success) {
+            _user.value?.let { userVal ->
+                _userDetails.update { Resource.Loading }
+                FirebaseFirestore.getInstance().collection("users").document(userVal.uid).get()
+                    .addOnSuccessListener { userSnapshot ->
+                        userSnapshot.toObject(User::class.java)?.let { user ->
+                            _userDetails.update { Resource.Success(user) }
+                        } ?: run {
+                            _userDetails.update {
+                                Resource.Error("User detail object transformation fail")
+                            }
+                        }
+                    }
+            } ?: run {
+                _userDetails.update {
+                    Resource.Error("No user found")
+                }
             }
+        }
     }
 
-    fun updateUserField(field: String, value: String) {
+    fun updateFirstName(firstName: String) {
+        _userDetails.update { res ->
+            res.mapSuccess { data ->
+                updateUserField("firstName", firstName)
+                data.copy(firstName = firstName)
+            }
+        }
+    }
+
+    fun updateLastName(lastName: String) {
+        _userDetails.update { res ->
+            res.mapSuccess { data ->
+                updateUserField("lastName", lastName)
+                data.copy(lastName = lastName)
+            }
+        }
+    }
+
+    private fun updateUserField(field: String, value: String) {
         val uid = auth.currentUser?.uid ?: return
         FirebaseFirestore.getInstance().collection("users").document(uid)
             .update(field, value)
