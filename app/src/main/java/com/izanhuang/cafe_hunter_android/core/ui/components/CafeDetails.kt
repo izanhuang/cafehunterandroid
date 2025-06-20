@@ -1,7 +1,9 @@
 package com.izanhuang.cafe_hunter_android.core.ui.components
 
 import ReviewCard
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -41,6 +43,7 @@ import coil.compose.AsyncImage
 import com.izanhuang.cafe_hunter_android.BuildConfig
 import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
 import com.izanhuang.cafe_hunter_android.core.domain.ReviewViewModel
+import com.izanhuang.cafe_hunter_android.core.ui.components.modifiers.shimmerEffect
 
 @Composable
 fun CafeDetails(
@@ -108,30 +111,44 @@ fun CafeDetails(
 fun CafeDetailsHeader(place: PlaceResult) {
     var showPhotoViewer by remember { mutableStateOf(false) }
 
+    val photoUrls = place.photos.map {
+        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${it.photo_reference}&key=${BuildConfig.MAPS_PLACES_API_KEY}"
+    }
+    val hasPhotos = photoUrls.isNotEmpty()
+    val imageUrl = photoUrls.firstOrNull()
+
+    var imageLoading by remember { mutableStateOf(true) }
+
     Column(modifier = Modifier.padding(16.dp)) {
-        // Image Preview
-        if (place.photos.isNotEmpty()) {
-            val photoUrls = place.photos.map {
-                "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${it.photo_reference}&key=${BuildConfig.MAPS_PLACES_API_KEY}"
-            }
-
-            AsyncImage(
-                model = photoUrls.first(),
-                contentDescription = "Cafe photo",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .clickable { showPhotoViewer = true },
-                contentScale = ContentScale.Crop
-            )
-
-            if (showPhotoViewer) {
-                CafePhotoViewer(
-                    photoUrls = photoUrls,
-                    onClose = { showPhotoViewer = false }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(180.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .clickable(enabled = hasPhotos) { showPhotoViewer = true }
+        ) {
+            if (hasPhotos) {
+                AsyncImage(
+                    model = imageUrl,
+                    contentDescription = "Cafe photo",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .matchParentSize()
+                        .then(if (imageLoading) Modifier.shimmerEffect() else Modifier),
+                    onSuccess = { imageLoading = false },
+                    onError = { imageLoading = false }
+                )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.LightGray)
                 )
             }
+        }
+
+        if (showPhotoViewer && hasPhotos) {
+            CafePhotoViewer(photoUrls = photoUrls, onClose = { showPhotoViewer = false })
         }
 
         Spacer(modifier = Modifier.height(16.dp))
