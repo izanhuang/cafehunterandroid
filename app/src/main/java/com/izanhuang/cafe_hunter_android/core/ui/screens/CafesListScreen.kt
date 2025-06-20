@@ -8,11 +8,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.navigation.NavController
 import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
 import com.izanhuang.cafe_hunter_android.core.ui.components.CafeCard
 
 @Composable
-fun CafesListScreen(cafes: List<PlaceResult>) {
+fun CafesListScreen(cafes: List<PlaceResult>, navController: NavController) {
     val listState = rememberLazyListState()
     var selectedCafe by remember { mutableStateOf<PlaceResult?>(null) }
 
@@ -23,7 +24,7 @@ fun CafesListScreen(cafes: List<PlaceResult>) {
             }
         }
     } else {
-        CafeDetailScreen(place = selectedCafe!!) {
+        CafeDetailScreen(place = selectedCafe!!, navController = navController) {
             selectedCafe = null
         }
     }

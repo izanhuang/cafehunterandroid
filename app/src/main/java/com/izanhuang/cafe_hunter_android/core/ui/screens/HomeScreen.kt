@@ -15,11 +15,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavController
 import com.izanhuang.cafe_hunter_android.core.domain.MapViewModel
 import com.izanhuang.cafe_hunter_android.core.utils.Resource
 
 @Composable
-fun HomeScreen(mapViewModel: MapViewModel, isMapView: Boolean) {
+fun HomeScreen(mapViewModel: MapViewModel, isMapView: Boolean, navController: NavController) {
     val locationUiState by mapViewModel.uiState.collectAsState()
 
     when (val state = locationUiState) {
@@ -27,8 +28,9 @@ fun HomeScreen(mapViewModel: MapViewModel, isMapView: Boolean) {
             mapViewModel = mapViewModel,
             userLatLng = state.data.userLatLng,
             currentLatLng = state.data.currentLatLng,
-            cafes = state.data.cafes
-        ) else CafesListScreen(cafes = state.data.cafes)
+            cafes = state.data.cafes,
+            navController = navController
+        ) else CafesListScreen(cafes = state.data.cafes, navController = navController)
 
         is Resource.Error -> InitialHomeScreen()
         Resource.Loading -> LoadingScreen()

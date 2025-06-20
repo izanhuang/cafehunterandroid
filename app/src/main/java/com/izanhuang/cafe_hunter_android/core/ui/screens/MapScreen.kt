@@ -22,6 +22,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -47,7 +48,8 @@ fun MapScreen(
     mapViewModel: MapViewModel,
     userLatLng: CustomLatLng,
     currentLatLng: CustomLatLng,
-    cafes: List<PlaceResult>
+    cafes: List<PlaceResult>,
+    navController: NavController,
 ) {
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(
@@ -121,7 +123,8 @@ fun MapScreen(
                             place = cafe,
                             updateShowReviewForm = { showReviewForm = it },
                             padding = PaddingValues(8.dp),
-                            reviewViewModel = reviewViewModel
+                            reviewViewModel = reviewViewModel,
+                            navController = navController
                         )
                     } else {
                         ReviewForm(

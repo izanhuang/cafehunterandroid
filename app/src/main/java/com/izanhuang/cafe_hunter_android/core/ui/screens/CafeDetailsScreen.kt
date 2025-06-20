@@ -17,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
 import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
 import com.izanhuang.cafe_hunter_android.core.domain.ReviewViewModel
 import com.izanhuang.cafe_hunter_android.core.ui.components.CafeDetails
@@ -25,6 +26,7 @@ import com.izanhuang.cafe_hunter_android.core.ui.components.CafeDetails
 @Composable
 fun CafeDetailScreen(
     place: PlaceResult,
+    navController: NavController,
     onBack: () -> Unit
 ) {
     val reviewViewModel = remember { ReviewViewModel() }
@@ -58,7 +60,8 @@ fun CafeDetailScreen(
                 place = place,
                 updateShowReviewForm = { showReviewForm = it },
                 padding = padding,
-                reviewViewModel = reviewViewModel
+                reviewViewModel = reviewViewModel,
+                navController = navController
             )
         } else {
             ReviewForm(

@@ -24,7 +24,11 @@ fun NavHostContainer(
         modifier = Modifier.padding(paddingValues = padding),
         builder = {
             composable("home") {
-                HomeScreen(mapViewModel = mapViewModel, isMapView = isMapView)
+                HomeScreen(
+                    mapViewModel = mapViewModel,
+                    isMapView = isMapView,
+                    navController = navController
+                )
             }
             composable("auth") {
                 AuthScreen()

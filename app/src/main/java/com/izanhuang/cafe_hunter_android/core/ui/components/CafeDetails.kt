@@ -39,20 +39,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.izanhuang.cafe_hunter_android.BuildConfig
+import com.izanhuang.cafe_hunter_android.LocalAuthViewModel
 import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
 import com.izanhuang.cafe_hunter_android.core.domain.ReviewViewModel
 import com.izanhuang.cafe_hunter_android.core.ui.components.modifiers.shimmerEffect
+import com.izanhuang.cafe_hunter_android.core.utils.Constants
 
 @Composable
 fun CafeDetails(
     place: PlaceResult,
     updateShowReviewForm: (Boolean) -> Unit,
     padding: PaddingValues,
-    reviewViewModel: ReviewViewModel
+    reviewViewModel: ReviewViewModel,
+    navController: NavController
 ) {
     val reviews = reviewViewModel.reviews
+    val user = LocalAuthViewModel.current.user
     val listState = rememberLazyListState()
 
     LaunchedEffect(place.place_id) {
@@ -81,9 +86,16 @@ fun CafeDetails(
             CafeDetailsHeader(place)
         }
 
+
         item {
             Button(
-                onClick = { updateShowReviewForm(true) },
+                onClick = {
+                    if (user.value?.uid != null) {
+                        updateShowReviewForm(true)
+                    } else {
+                        navController.navigate(Constants.BottomNavItems[1].route)
+                    }
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Write a Review")
