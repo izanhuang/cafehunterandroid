@@ -36,6 +36,7 @@ import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
 import com.izanhuang.cafe_hunter_android.core.domain.MapViewModel
 import com.izanhuang.cafe_hunter_android.core.domain.ReviewViewModel
 import com.izanhuang.cafe_hunter_android.core.ui.components.CafeDetails
+import com.izanhuang.cafe_hunter_android.core.ui.components.setCoffeeCupMapIconWithText
 import com.izanhuang.cafe_hunter_android.core.ui.components.setCustomMapIcon
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
@@ -163,7 +164,7 @@ fun MapScreen(
                 Marker(
                     state = MarkerState(LatLng(cafe.geometry.location.lat, cafe.geometry.location.lng)),
                     title = cafe.name,
-                    icon = setCustomMapIcon(cafe.name),
+                    icon = setCoffeeCupMapIconWithText(cafe.name),
                     onClick = {
                         onMarkerClick(cafe)
                     }
