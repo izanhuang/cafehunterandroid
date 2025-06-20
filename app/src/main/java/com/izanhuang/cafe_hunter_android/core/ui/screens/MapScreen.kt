@@ -40,6 +40,7 @@ import com.izanhuang.cafe_hunter_android.core.ui.components.setCoffeeCupMapIconW
 import com.izanhuang.cafe_hunter_android.core.ui.components.setCustomMapIcon
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import com.izanhuang.cafe_hunter_android.core.data.LatLng as CustomLatLng
 
@@ -93,15 +94,14 @@ fun MapScreen(
         }
     }
 
-    LaunchedEffect(cameraPositionState.position.target) {
-        snapshotFlow { cameraPositionState.position.target }
-            .debounce(200)
+    LaunchedEffect(cameraPositionState) {
+        snapshotFlow { cameraPositionState.isMoving }
+            .filter { moving -> !moving }
+            .debounce(300) // Wait until camera stops moving
             .collect {
+                val target = cameraPositionState.position.target
                 mapViewModel.updateCurrentLocation(
-                    CustomLatLng(
-                        lat = it.latitude,
-                        lng = it.longitude
-                    )
+                    CustomLatLng(lat = target.latitude, lng = target.longitude)
                 )
             }
     }
