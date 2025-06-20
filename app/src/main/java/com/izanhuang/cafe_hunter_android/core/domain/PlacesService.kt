@@ -11,6 +11,6 @@ interface PlacesService {
         @Query("radius") radius: Int = 1500, // meters
 //        @Query("type") type: String = "cafe",
         @Query("key") apiKey: String,
-        @Query("keyword") keyword: String = "cafe|coffee|espresso|tea|bubble tea|boba|dessert|bakery|milk tea"
+        @Query("keyword") keyword: String = "cafe|coffee|coffee shop|bakery|espresso|tea|bubble tea|boba|dessert|bakery|milk tea"
     ): PlacesResponse
 }
