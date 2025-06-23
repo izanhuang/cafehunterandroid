@@ -2,7 +2,6 @@ package com.izanhuang.cafe_hunter_android.core.ui.components
 
 import ReviewCard
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -120,8 +119,6 @@ fun CafeDetails(
 
 @Composable
 fun CafeDetailsHeader(place: PlaceResult) {
-    var showPhotoViewer by remember { mutableStateOf(false) }
-
     val photoUrls = place.photos?.map {
         "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${it.photo_reference}&key=${BuildConfig.MAPS_PLACES_API_KEY}"
     }
@@ -137,7 +134,6 @@ fun CafeDetailsHeader(place: PlaceResult) {
                 .fillMaxWidth()
                 .height(180.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .clickable(enabled = hasPhotos) { showPhotoViewer = true }
         ) {
             if (hasPhotos) {
                 AsyncImage(
@@ -157,10 +153,6 @@ fun CafeDetailsHeader(place: PlaceResult) {
                         .background(Color.LightGray)
                 )
             }
-        }
-
-        if (showPhotoViewer && hasPhotos && !photoUrls.isNullOrEmpty()) {
-            CafePhotoViewer(photoUrls = photoUrls, onClose = { showPhotoViewer = false })
         }
 
         Spacer(modifier = Modifier.height(16.dp))
