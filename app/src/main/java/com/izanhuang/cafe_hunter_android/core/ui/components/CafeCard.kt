@@ -43,7 +43,7 @@ fun CafeCard(place: PlaceResult, onClick: () -> Unit, modifier: Modifier = Modif
         Column(modifier = Modifier.padding(16.dp)) {
 
             // Load photo if available
-            place.photos.firstOrNull()?.let { photo ->
+            place.photos?.firstOrNull()?.let { photo ->
                 val photoUrl = "https://maps.googleapis.com/maps/api/place/photo" +
                         "?maxwidth=400&photoreference=${photo.photo_reference}&key=${BuildConfig.MAPS_PLACES_API_KEY}"
                 AsyncImage(

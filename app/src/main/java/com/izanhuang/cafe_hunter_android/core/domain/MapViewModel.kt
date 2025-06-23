@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.izanhuang.cafe_hunter_android.core.data.LatLng
+import com.izanhuang.cafe_hunter_android.core.data.LocationCache
+import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
 import com.izanhuang.cafe_hunter_android.core.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,28 +19,18 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MapViewModel(
-    private val repository: PlacesRepository
+    private val repository: PlacesRepository,
+    private val locationCache: LocationCache
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<Resource<MapUiState>> =
         MutableStateFlow(Resource.Loading)
     val uiState: StateFlow<Resource<MapUiState>> = _uiState.asStateFlow()
 
-    companion object {
-        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(
-                modelClass: Class<T>,
-                extras: CreationExtras
-            ): T {
-                val retrofit = Retrofit.Builder()
-                    .baseUrl("https://maps.googleapis.com/maps/api/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
-
-                val api = retrofit.create(PlacesService::class.java)
-                val repository = PlacesRepository(api)
-
-                return MapViewModel(repository) as T
+    init {
+        // Observe cache changes and update UI state
+        viewModelScope.launch {
+            locationCache.cachedLocations.collect { cachedPlaces ->
+                updateCafesInUiState(cachedPlaces)
             }
         }
     }
@@ -61,23 +53,57 @@ class MapViewModel(
         fetchNearbyCafes()
     }
 
+    private fun updateCafesInUiState(cachedPlaces: List<PlaceResult>) {
+        _uiState.update { currentUiState ->
+            when (currentUiState) {
+                is Resource.Success -> {
+                    Resource.Success(currentUiState.data.copy(cafes = cachedPlaces))
+                }
+                is Resource.Error, Resource.Loading -> currentUiState
+            }
+        }
+    }
+
     private fun fetchNearbyCafes() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _uiState.update { currentUiState ->
                     when (currentUiState) {
                         is Resource.Success -> {
-                            val cafes = repository.getNearbyCafes(
+                            val newCafes = repository.getNearbyCafes(
                                 currentUiState.data.currentLatLng
                             )
-                            Resource.Success(currentUiState.data.copy(cafes = cafes))
+                            // Add to cache instead of directly to UI state
+                            locationCache.addLocations(newCafes)
+                            // UI state will be updated via cache observer
+                            currentUiState
                         }
-
                         is Resource.Error, Resource.Loading -> currentUiState
                     }
                 }
             } catch (e: Exception) {
                 Log.e("MapViewModel", "Error fetching cafes", e)
+            }
+        }
+    }
+
+    companion object {
+        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras
+            ): T {
+                val retrofit = Retrofit.Builder()
+                    .baseUrl("https://maps.googleapis.com/maps/api/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+
+                val api = retrofit.create(PlacesService::class.java)
+                val repository = PlacesRepository(api)
+                val locationCache = LocationCache() // Or inject this too
+
+                return MapViewModel(repository, locationCache) as T
             }
         }
     }

@@ -122,11 +122,12 @@ fun CafeDetails(
 fun CafeDetailsHeader(place: PlaceResult) {
     var showPhotoViewer by remember { mutableStateOf(false) }
 
-    val photoUrls = place.photos.map {
+    val photoUrls = place.photos?.map {
         "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${it.photo_reference}&key=${BuildConfig.MAPS_PLACES_API_KEY}"
     }
-    val hasPhotos = photoUrls.isNotEmpty()
-    val imageUrl = photoUrls.firstOrNull()
+
+    val hasPhotos = !photoUrls.isNullOrEmpty()
+    val imageUrl = photoUrls?.firstOrNull()
 
     var imageLoading by remember { mutableStateOf(true) }
 
@@ -158,7 +159,7 @@ fun CafeDetailsHeader(place: PlaceResult) {
             }
         }
 
-        if (showPhotoViewer && hasPhotos) {
+        if (showPhotoViewer && hasPhotos && !photoUrls.isNullOrEmpty()) {
             CafePhotoViewer(photoUrls = photoUrls, onClose = { showPhotoViewer = false })
         }
 
