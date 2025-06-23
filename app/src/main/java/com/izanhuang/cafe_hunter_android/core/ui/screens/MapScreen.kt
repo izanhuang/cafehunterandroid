@@ -100,8 +100,10 @@ fun MapScreen(
             .debounce(300) // Wait until camera stops moving
             .collect {
                 val target = cameraPositionState.position.target
+                val latLngBounds = cameraPositionState.projection?.visibleRegion?.latLngBounds
                 mapViewModel.updateCurrentLocation(
-                    CustomLatLng(lat = target.latitude, lng = target.longitude)
+                    CustomLatLng(lat = target.latitude, lng = target.longitude),
+                    latLngBounds
                 )
             }
     }

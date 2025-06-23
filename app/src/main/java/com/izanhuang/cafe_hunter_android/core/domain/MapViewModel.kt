@@ -5,9 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import com.google.android.gms.maps.model.LatLngBounds
 import com.izanhuang.cafe_hunter_android.core.data.LatLng
 import com.izanhuang.cafe_hunter_android.core.data.LocationCache
 import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
+import com.izanhuang.cafe_hunter_android.core.data.convertToGoogleType
 import com.izanhuang.cafe_hunter_android.core.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,26 +42,42 @@ class MapViewModel(
         fetchNearbyCafes()
     }
 
-    fun updateCurrentLocation(latlng: LatLng) {
+    fun updateCurrentLocation(latlng: LatLng, latLngBounds: LatLngBounds?) {
         _uiState.update { currentUiState ->
             when (currentUiState) {
                 is Resource.Success -> {
-                    Resource.Success(currentUiState.data.copy(currentLatLng = latlng))
+                    Resource.Success(
+                        currentUiState.data.copy(
+                            currentLatLng = latlng,
+                            latLngBounds = latLngBounds
+                        )
+                    )
                 }
 
                 is Resource.Error, Resource.Loading -> currentUiState
             }
         }
+        updateCafesInUiState()
         fetchNearbyCafes()
     }
 
-    private fun updateCafesInUiState(cachedPlaces: List<PlaceResult>) {
-        _uiState.update { currentUiState ->
-            when (currentUiState) {
-                is Resource.Success -> {
-                    Resource.Success(currentUiState.data.copy(cafes = cachedPlaces))
+    private fun updateCafesInUiState(cachedPlaces: List<PlaceResult> = locationCache.cachedLocations.value) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _uiState.update { currentUiState ->
+                when (currentUiState) {
+                    is Resource.Success -> {
+                        var filteredCachePlaces = cachedPlaces
+                        currentUiState.data.latLngBounds?.let {
+                            filteredCachePlaces = filteredCachePlaces.filter { place ->
+                                val googleLatLng = place.geometry.location.convertToGoogleType()
+                                it.contains(googleLatLng)
+                            }
+                        }
+                        Resource.Success(currentUiState.data.copy(cafes = filteredCachePlaces))
+                    }
+
+                    is Resource.Error, Resource.Loading -> currentUiState
                 }
-                is Resource.Error, Resource.Loading -> currentUiState
             }
         }
     }
@@ -78,6 +96,7 @@ class MapViewModel(
                             // UI state will be updated via cache observer
                             currentUiState
                         }
+
                         is Resource.Error, Resource.Loading -> currentUiState
                     }
                 }
