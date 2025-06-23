@@ -26,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,7 +57,7 @@ fun CafeDetails(
     navController: NavController
 ) {
     val reviews = reviewViewModel.reviews
-    val user = LocalAuthViewModel.current.user
+    val user by LocalAuthViewModel.current.user.collectAsState()
     val listState = rememberLazyListState()
 
     LaunchedEffect(place.place_id) {
@@ -89,7 +90,7 @@ fun CafeDetails(
         item {
             Button(
                 onClick = {
-                    if (user.value?.uid != null) {
+                    if (user?.uid != null) {
                         updateShowReviewForm(true)
                     } else {
                         navController.navigate(Constants.BottomNavItems[1].route)

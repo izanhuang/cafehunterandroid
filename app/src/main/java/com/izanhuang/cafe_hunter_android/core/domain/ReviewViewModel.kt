@@ -25,6 +25,7 @@ class ReviewViewModel(private val db: FirebaseFirestore = FirebaseFirestore.getI
     val reviews: List<ReviewWithUser> get() = _reviews
 
     fun submitReview(place: PlaceResult, review: Review, userId: String) {
+        _reviewSubmissionState.value = true
         val cafesRef = db.collection("cafes")
 
         cafesRef.document(place.place_id).get()
@@ -81,7 +82,7 @@ class ReviewViewModel(private val db: FirebaseFirestore = FirebaseFirestore.getI
         )
 
         reviewRef.set(reviewData).addOnSuccessListener {
-            _reviewSubmissionState.value = true
+            _reviewSubmissionState.value = false
         }.addOnFailureListener {
             _reviewSubmissionState.value = false
         }

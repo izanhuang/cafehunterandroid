@@ -16,12 +16,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.izanhuang.cafe_hunter_android.core.domain.AuthViewModel
+import com.izanhuang.cafe_hunter_android.LocalAuthViewModel
 import com.izanhuang.cafe_hunter_android.core.ui.components.LoginForm
 import com.izanhuang.cafe_hunter_android.core.ui.components.RegisterForm
 
 @Composable
-fun AuthScreen(authViewModel: AuthViewModel = AuthViewModel()) {
+fun AuthScreen() {
+    val authViewModel = LocalAuthViewModel.current
     val user by authViewModel.user.collectAsState()
 
     if (user == null) {
