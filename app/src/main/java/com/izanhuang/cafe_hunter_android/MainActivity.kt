@@ -3,7 +3,6 @@ package com.izanhuang.cafe_hunter_android
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.FabPosition
@@ -23,6 +22,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.izanhuang.cafe_hunter_android.core.data.AppLogger
 import com.izanhuang.cafe_hunter_android.core.data.LatLng
 import com.izanhuang.cafe_hunter_android.core.domain.AuthViewModel
 import com.izanhuang.cafe_hunter_android.core.domain.MapViewModel
@@ -67,7 +67,7 @@ class MainActivity : FragmentActivity() {
                     )
                 )
             } else {
-                Log.i("MAIN ACTIVITY", "Location null")
+                AppLogger.d("MAIN ACTIVITY", "Location null")
             }
         }
     }
@@ -134,10 +134,11 @@ class MainActivity : FragmentActivity() {
         ) {
             // If permission is granted, fetch the location
             getCurrentLocation()
-            Log.i("MAIN ACTIVITY", "Location permission granted")
+            AppLogger.d("MAIN ACTIVITY", "Location permission granted")
+
         } else {
             // If permission is denied, update the TextView with an error message
-            Log.i("MAIN ACTIVITY", "Location permission denied")
+            AppLogger.d("MAIN ACTIVITY", "Location permission denied")
         }
     }
 }

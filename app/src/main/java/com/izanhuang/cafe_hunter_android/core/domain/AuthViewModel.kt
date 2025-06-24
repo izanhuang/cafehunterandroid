@@ -1,6 +1,5 @@
 package com.izanhuang.cafe_hunter_android.core.domain
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
@@ -10,6 +9,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.izanhuang.cafe_hunter_android.core.data.AppLogger
 import com.izanhuang.cafe_hunter_android.core.data.User
 import com.izanhuang.cafe_hunter_android.core.utils.Resource
 import com.izanhuang.cafe_hunter_android.core.utils.mapSuccess
@@ -102,10 +102,10 @@ class AuthViewModel : ViewModel() {
 
         userRef.set(userData, SetOptions.merge())
             .addOnSuccessListener {
-                Log.d("AuthViewModel", "User created/updated in Firestore.")
+                AppLogger.d("AuthViewModel", "User created/updated in Firestore.")
             }
             .addOnFailureListener {
-                Log.e("AuthViewModel", "Failed to create user in Firestore", it)
+                AppLogger.e("AuthViewModel", "Failed to create user in Firestore", it)
             }
     }
 

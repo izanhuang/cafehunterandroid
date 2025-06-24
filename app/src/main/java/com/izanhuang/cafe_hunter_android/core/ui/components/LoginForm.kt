@@ -1,6 +1,5 @@
 package com.izanhuang.cafe_hunter_android.core.ui.components
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -29,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.izanhuang.cafe_hunter_android.R
+import com.izanhuang.cafe_hunter_android.core.data.AppLogger
 import com.izanhuang.cafe_hunter_android.core.domain.AuthViewModel
 
 @Composable
@@ -48,10 +48,11 @@ fun LoginForm(authViewModel: AuthViewModel) {
                 authResult = authResult,
                 onResult = { isSignedIn, message ->
                     if (isSignedIn) {
-                        Log.d("Google Sign In", "Signed in successfully")
+                        AppLogger.d("Google Sign In", "Signed in successfully")
                     } else {
-                        Log.e("Google Sign In", "Sign in failed: $message")
-                        Toast.makeText(context, message ?: "Sign in failed", Toast.LENGTH_SHORT).show()
+                        AppLogger.e("Google Sign In", "Sign in failed: $message")
+                        Toast.makeText(context, message ?: "Sign in failed", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
             )
@@ -114,7 +115,8 @@ fun LoginForm(authViewModel: AuthViewModel) {
                 if (!hasError) {
                     authViewModel.login(email, password) { success, error ->
                         if (!success) {
-                            Toast.makeText(context, error ?: "Login failed", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, error ?: "Login failed", Toast.LENGTH_SHORT)
+                                .show()
                         }
                     }
                 }

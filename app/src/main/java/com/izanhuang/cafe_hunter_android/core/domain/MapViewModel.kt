@@ -1,11 +1,11 @@
 package com.izanhuang.cafe_hunter_android.core.domain
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.google.android.gms.maps.model.LatLngBounds
+import com.izanhuang.cafe_hunter_android.core.data.AppLogger
 import com.izanhuang.cafe_hunter_android.core.data.LatLng
 import com.izanhuang.cafe_hunter_android.core.data.LocationCache
 import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
@@ -101,7 +101,7 @@ class MapViewModel(
                     }
                 }
             } catch (e: Exception) {
-                Log.e("MapViewModel", "Error fetching cafes", e)
+                AppLogger.e("MapViewModel", "Error fetching cafes", e)
             }
         }
     }
