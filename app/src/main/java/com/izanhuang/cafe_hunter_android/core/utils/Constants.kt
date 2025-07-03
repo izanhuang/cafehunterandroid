@@ -2,6 +2,7 @@ package com.izanhuang.cafe_hunter_android.core.utils
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.rounded.Star
 import com.izanhuang.cafe_hunter_android.core.ui.models.BottomNavItem
 
 object Constants {
@@ -11,6 +12,11 @@ object Constants {
             label = "Home",
             icon = Icons.Filled.Home,
             route = "home"
+        ),
+        BottomNavItem(
+            label = "Roulette",
+            icon = Icons.Rounded.Star,
+            route = "random"
         ),
         // Profile screen
         BottomNavItem(

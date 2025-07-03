@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import com.izanhuang.cafe_hunter_android.core.domain.MapViewModel
 import com.izanhuang.cafe_hunter_android.core.ui.screens.AuthScreen
 import com.izanhuang.cafe_hunter_android.core.ui.screens.HomeScreen
+import com.izanhuang.cafe_hunter_android.core.ui.screens.RandomCafeScreen
 
 @Composable
 fun NavHostContainer(
@@ -30,6 +31,11 @@ fun NavHostContainer(
                     navController = navController
                 )
             }
+
+            composable("random") {
+                RandomCafeScreen(mapViewModel = mapViewModel)
+            }
+
             composable("auth") {
                 AuthScreen()
             }

@@ -42,6 +42,34 @@ class MapViewModel(
         fetchNearbyCafes()
     }
 
+    fun getRandomCafe(radius: Int) {
+        fetchNearbyCafesFromUser(radius)
+    }
+
+    private fun fetchNearbyCafesFromUser(radius: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _uiState.update { currentUiState ->
+                    when (currentUiState) {
+                        is Resource.Success -> {
+                            val cafes = repository.getNearbyCafes(
+                                currentUiState.data.userLatLng,
+                                radius
+                            )
+                            Resource.Success(currentUiState.data.copy(
+                                randomCafe = cafes.random()
+                            ))
+                        }
+
+                        is Resource.Error, Resource.Loading -> currentUiState
+                    }
+                }
+            } catch (e: Exception) {
+                AppLogger.e("MapViewModel", "Error fetching random cafe", e)
+            }
+        }
+    }
+
     fun updateCurrentLocation(latlng: LatLng, latLngBounds: LatLngBounds?) {
         _uiState.update { currentUiState ->
             when (currentUiState) {

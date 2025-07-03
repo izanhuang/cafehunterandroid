@@ -8,5 +8,6 @@ data class MapUiState(
     val userLatLng: LatLng,
     val currentLatLng: LatLng,
     val latLngBounds: LatLngBounds? = null,
-    val cafes: List<PlaceResult> = emptyList()
+    val cafes: List<PlaceResult> = emptyList(),
+    val randomCafe: PlaceResult? = null
 )
