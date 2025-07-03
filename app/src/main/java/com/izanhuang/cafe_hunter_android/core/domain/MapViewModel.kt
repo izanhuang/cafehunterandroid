@@ -39,7 +39,7 @@ class MapViewModel(
 
     fun updateUserLocation(latlng: LatLng) {
         _uiState.value = Resource.Success(MapUiState(userLatLng = latlng, currentLatLng = latlng))
-        fetchNearbyCafes()
+        fetchNearbyCafes(750)
     }
 
     fun getRandomCafe(radius: Int) {
@@ -70,7 +70,7 @@ class MapViewModel(
         }
     }
 
-    fun updateCurrentLocation(latlng: LatLng, latLngBounds: LatLngBounds?) {
+    fun updateCurrentLocation(latlng: LatLng, radius: Int, latLngBounds: LatLngBounds?) {
         _uiState.update { currentUiState ->
             when (currentUiState) {
                 is Resource.Success -> {
@@ -86,7 +86,7 @@ class MapViewModel(
             }
         }
         updateCafesInUiState()
-        fetchNearbyCafes()
+        fetchNearbyCafes(radius)
     }
 
     private fun updateCafesInUiState(cachedPlaces: List<PlaceResult> = locationCache.cachedLocations.value) {
@@ -110,14 +110,15 @@ class MapViewModel(
         }
     }
 
-    private fun fetchNearbyCafes() {
+    private fun fetchNearbyCafes(radius: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _uiState.update { currentUiState ->
                     when (currentUiState) {
                         is Resource.Success -> {
                             val newCafes = repository.getNearbyCafes(
-                                currentUiState.data.currentLatLng
+                                latLng = currentUiState.data.currentLatLng,
+                                radius = radius
                             )
                             // Add to cache instead of directly to UI state
                             locationCache.addLocations(newCafes)

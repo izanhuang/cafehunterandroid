@@ -101,9 +101,19 @@ fun MapScreen(
             .collect {
                 val target = cameraPositionState.position.target
                 val latLngBounds = cameraPositionState.projection?.visibleRegion?.latLngBounds
+                val zoom = cameraPositionState.position.zoom
+                val radius = when {
+                    zoom >= 18f -> 100
+                    zoom >= 16f -> 300
+                    zoom >= 14f -> 800
+                    zoom >= 12f -> 2000
+                    zoom >= 10f -> 5000
+                    else -> 10000
+                }
                 mapViewModel.updateCurrentLocation(
                     CustomLatLng(lat = target.latitude, lng = target.longitude),
-                    latLngBounds
+                    radius = radius,
+                    latLngBounds = latLngBounds,
                 )
             }
     }
@@ -164,7 +174,12 @@ fun MapScreen(
 
             cafes.forEach { cafe ->
                 Marker(
-                    state = MarkerState(LatLng(cafe.geometry.location.lat, cafe.geometry.location.lng)),
+                    state = MarkerState(
+                        LatLng(
+                            cafe.geometry.location.lat,
+                            cafe.geometry.location.lng
+                        )
+                    ),
                     title = cafe.name,
                     icon = setCoffeeCupMapIconWithText(cafe.name),
                     onClick = {

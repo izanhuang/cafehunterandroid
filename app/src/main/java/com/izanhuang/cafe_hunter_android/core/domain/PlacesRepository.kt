@@ -5,7 +5,7 @@ import com.izanhuang.cafe_hunter_android.core.data.LatLng
 import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
 
 class PlacesRepository(private val placesService: PlacesService) {
-    suspend fun getNearbyCafes(latLng: LatLng, radius: Int = 750): List<PlaceResult> {
+    suspend fun getNearbyCafes(latLng: LatLng, radius: Int): List<PlaceResult> {
         val location = "${latLng.lat},${latLng.lng}"
         return placesService.getNearbyCafes(
             location = location,
