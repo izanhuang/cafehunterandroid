@@ -3,7 +3,7 @@ package com.izanhuang.cafe_hunter_android.core.ui.screens
 import ReviewForm
 import android.widget.Toast
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,7 +37,7 @@ fun CafeDetailScreen(
 
     // Show toast on successful submission
     LaunchedEffect(submissionState) {
-        if (submissionState) {
+        if (!submissionState) {
             Toast.makeText(context, "Review submitted!", Toast.LENGTH_SHORT).show()
             showReviewForm = false
         }
@@ -49,7 +49,7 @@ fun CafeDetailScreen(
                 title = { Text(place.name) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 }
             )

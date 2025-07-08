@@ -122,7 +122,7 @@ fun ReviewForm(
             Button(onClick = {
                 pickImagesLauncher.launch("image/*")
             }) {
-                Text("Upload photos")
+                Text("Pick up to 3 photos")
             }
         }
 
@@ -156,11 +156,11 @@ fun ReviewForm(
                         isWorkFriendly = isWorkFriendly.value,
                         wouldRecommend = wouldRecommend.value,
                         description = reviewText.value,
-                        created_at = Timestamp.now()
+                        created_at = Timestamp.now(),
                     )
 
                     showRatingError.value = false
-                    reviewViewModel.submitReview(place, review, userId)
+                    reviewViewModel.submitReview(place, review, userId, selectedImageUris.toList())
                 },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = submitting

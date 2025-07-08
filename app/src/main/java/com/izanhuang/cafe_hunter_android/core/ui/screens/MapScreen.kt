@@ -88,7 +88,7 @@ fun MapScreen(
     }
 
     LaunchedEffect(submissionState) {
-        if (submissionState) {
+        if (!submissionState) {
             Toast.makeText(context, "Review submitted!", Toast.LENGTH_SHORT).show()
             showReviewForm = false
         }

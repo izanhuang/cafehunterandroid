@@ -1,18 +1,23 @@
 package com.izanhuang.cafe_hunter_android.core.domain
 
+import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.firestore.Query
+import com.google.firebase.storage.FirebaseStorage
 import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
 import com.izanhuang.cafe_hunter_android.core.data.Review
 import com.izanhuang.cafe_hunter_android.core.data.ReviewWithUser
 import com.izanhuang.cafe_hunter_android.core.data.User
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class ReviewViewModel(private val db: FirebaseFirestore = FirebaseFirestore.getInstance()) :
     ViewModel() {
@@ -24,7 +29,7 @@ class ReviewViewModel(private val db: FirebaseFirestore = FirebaseFirestore.getI
     private val _reviews = mutableStateListOf<ReviewWithUser>()
     val reviews: List<ReviewWithUser> get() = _reviews
 
-    fun submitReview(place: PlaceResult, review: Review, userId: String) {
+    fun submitReview(place: PlaceResult, review: Review, userId: String, imageUris: List<Uri>) {
         _reviewSubmissionState.value = true
         val cafesRef = db.collection("cafes")
 
@@ -32,7 +37,7 @@ class ReviewViewModel(private val db: FirebaseFirestore = FirebaseFirestore.getI
             .addOnSuccessListener { docSnapshot ->
                 if (docSnapshot.exists()) {
                     // Cafe exists, upload review
-                    uploadReview(place.place_id, review, userId)
+                    uploadReview(place.place_id, review, userId, imageUris)
                 } else {
                     val newCafeDoc = cafesRef.document(place.place_id)
                     val newCafe = mapOf(
@@ -47,7 +52,7 @@ class ReviewViewModel(private val db: FirebaseFirestore = FirebaseFirestore.getI
                     )
                     newCafeDoc.set(newCafe)
                         .addOnSuccessListener {
-                            uploadReview(place.place_id, review, userId)
+                            uploadReview(place.place_id, review, userId, imageUris)
                         }
                         .addOnFailureListener {
                             _reviewSubmissionState.value = false
@@ -59,32 +64,56 @@ class ReviewViewModel(private val db: FirebaseFirestore = FirebaseFirestore.getI
             }
     }
 
-    private fun uploadReview(cafeId: String, review: Review, userId: String) {
+    private suspend fun uploadImagesToFirebase(
+        imageUris: List<Uri>,
+        cafeId: String,
+        reviewId: String
+    ): List<String> {
+        val storageRef = FirebaseStorage.getInstance().reference
+        val urls = mutableListOf<String>()
+
+        for ((index, uri) in imageUris.withIndex()) {
+            val fileRef = storageRef.child("reviews/$cafeId/$reviewId/photo_$index.jpg")
+            fileRef.putFile(uri).await()
+            val downloadUrl = fileRef.downloadUrl.await().toString()
+            urls.add(downloadUrl)
+        }
+
+        return urls
+    }
+
+    private fun uploadReview(cafeId: String, review: Review, userId: String, imageUris: List<Uri>) {
         val reviewRef = db.collection("cafes")
             .document(cafeId)
             .collection("reviews")
             .document()
 
-        val reviewData = mapOf(
-            "coffee_rating" to review.coffeeRating,
-            "food_rating" to review.foodRating,
-            "space_rating" to review.spaceRating,
-            "loudness" to review.loudness,
-            "rating" to review.rating,
-            "is_busy" to review.isBusy,
-            "is_cozy" to review.isCozy,
-            "is_work_friendly" to review.isWorkFriendly,
-            "would_recommend" to review.wouldRecommend,
-            "description" to review.description,
-            "user_id" to db.collection("users").document(userId),
-            "cafe_id" to db.collection("cafes").document(cafeId),
-            "created_at" to Timestamp.now(),
-        )
+        viewModelScope.launch {
+            try {
+                val photoUrls = uploadImagesToFirebase(imageUris, cafeId, reviewRef.id)
 
-        reviewRef.set(reviewData).addOnSuccessListener {
-            _reviewSubmissionState.value = false
-        }.addOnFailureListener {
-            _reviewSubmissionState.value = false
+                val reviewData = mapOf(
+                    "coffee_rating" to review.coffeeRating,
+                    "food_rating" to review.foodRating,
+                    "space_rating" to review.spaceRating,
+                    "loudness" to review.loudness,
+                    "rating" to review.rating,
+                    "is_busy" to review.isBusy,
+                    "is_cozy" to review.isCozy,
+                    "is_work_friendly" to review.isWorkFriendly,
+                    "would_recommend" to review.wouldRecommend,
+                    "description" to review.description,
+                    "user_id" to db.collection("users").document(userId),
+                    "cafe_id" to db.collection("cafes").document(cafeId),
+                    "created_at" to Timestamp.now(),
+                    "photo_urls" to photoUrls
+                )
+
+                reviewRef.set(reviewData).await()
+                _reviewSubmissionState.value = false
+            } catch (e: Exception) {
+                _reviewSubmissionState.value = false
+            }
         }
     }
 
@@ -155,6 +184,7 @@ private fun DocumentSnapshot.toReview(): Review? {
                     user_id = userDocRef.id,
                     cafe_id = cafeDocRef.id,
                     created_at = getTimestamp("created_at") ?: Timestamp.now(),
+                    photo_urls = (get("photo_urls") as? List<*>)?.mapNotNull { it as? String } ?: emptyList()
                 )
             }
         }

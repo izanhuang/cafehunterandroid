@@ -15,5 +15,6 @@ data class Review(
     val description: String = "",
     val cafe_id: String = "",
     val user_id: String = "",
-    val created_at: Timestamp
+    val created_at: Timestamp,
+    val photo_urls: List<String> = emptyList(),
 )
