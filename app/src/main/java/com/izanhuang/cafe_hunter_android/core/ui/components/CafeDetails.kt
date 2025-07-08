@@ -80,12 +80,11 @@ fun CafeDetails(
         modifier = Modifier
             .fillMaxSize()
             .padding(padding)
-            .padding(16.dp),
+            .padding(horizontal = 16.dp),
     ) {
         item {
             CafeDetailsHeader(place)
         }
-
 
         item {
             Button(
@@ -93,7 +92,7 @@ fun CafeDetails(
                     if (user?.uid != null) {
                         updateShowReviewForm(true)
                     } else {
-                        navController.navigate(Constants.BottomNavItems[1].route)
+                        navController.navigate(Constants.BottomNavItems.last().route)
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
