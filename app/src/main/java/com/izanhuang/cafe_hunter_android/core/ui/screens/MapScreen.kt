@@ -51,13 +51,14 @@ fun MapScreen(
     userLatLng: CustomLatLng,
     currentLatLng: CustomLatLng,
     cafes: List<PlaceResult>,
+    cameraZoom: Float,
     navController: NavController,
 ) {
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(
             LatLng(
                 currentLatLng.lat, currentLatLng.lng
-            ), 15f
+            ), cameraZoom
         )
     }
     val uiSettings by remember {
@@ -116,6 +117,7 @@ fun MapScreen(
                 mapViewModel.updateCurrentLocation(
                     CustomLatLng(lat = target.latitude, lng = target.longitude),
                     radius = radius,
+                    zoom = zoom,
                     latLngBounds = latLngBounds,
                 )
             }

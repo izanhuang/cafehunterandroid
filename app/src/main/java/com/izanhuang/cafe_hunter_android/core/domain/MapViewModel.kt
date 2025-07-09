@@ -70,13 +70,14 @@ class MapViewModel(
         }
     }
 
-    fun updateCurrentLocation(latlng: LatLng, radius: Int, latLngBounds: LatLngBounds?) {
+    fun updateCurrentLocation(latlng: LatLng, radius: Int, zoom: Float, latLngBounds: LatLngBounds?) {
         _uiState.update { currentUiState ->
             when (currentUiState) {
                 is Resource.Success -> {
                     Resource.Success(
                         currentUiState.data.copy(
                             currentLatLng = latlng,
+                            cameraZoom = zoom,
                             latLngBounds = latLngBounds
                         )
                     )

@@ -9,5 +9,6 @@ data class MapUiState(
     val currentLatLng: LatLng,
     val latLngBounds: LatLngBounds? = null,
     val cafes: List<PlaceResult> = emptyList(),
-    val randomCafe: PlaceResult? = null
+    val randomCafe: PlaceResult? = null,
+    val cameraZoom: Float = 15f,
 )

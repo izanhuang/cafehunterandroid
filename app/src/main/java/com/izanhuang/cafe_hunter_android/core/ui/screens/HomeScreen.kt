@@ -29,6 +29,7 @@ fun HomeScreen(mapViewModel: MapViewModel, isMapView: Boolean, navController: Na
             userLatLng = state.data.userLatLng,
             currentLatLng = state.data.currentLatLng,
             cafes = state.data.cafes,
+            cameraZoom = state.data.cameraZoom,
             navController = navController
         ) else CafesListScreen(cafes = state.data.cafes, navController = navController)
 
