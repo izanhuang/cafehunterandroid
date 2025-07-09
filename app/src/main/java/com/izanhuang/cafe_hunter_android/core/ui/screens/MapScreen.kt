@@ -49,8 +49,6 @@ import com.izanhuang.cafe_hunter_android.core.data.LatLng as CustomLatLng
 @Composable
 fun MapScreen(
     cafesViewModel: CafesViewModel,
-    userLatLng: CustomLatLng,
-    currentLatLng: CustomLatLng,
     userLatLng: LatLng,
     currentLatLng: LatLng,
     cafes: List<PlaceResult>,
