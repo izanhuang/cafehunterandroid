@@ -28,16 +28,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
-import com.izanhuang.cafe_hunter_android.core.domain.MapViewModel
+import com.izanhuang.cafe_hunter_android.core.domain.CafesViewModel
 import com.izanhuang.cafe_hunter_android.core.ui.components.cafes.CafeDetailsHeader
 import com.izanhuang.cafe_hunter_android.core.utils.Resource
 import kotlin.math.roundToInt
 
 @Composable
-fun RandomCafeScreen(mapViewModel: MapViewModel) {
+fun RandomCafeScreen(cafesViewModel: CafesViewModel) {
     var radius by remember { mutableStateOf(1000f) }
 
-    val mapUiState by mapViewModel.uiState.collectAsState()
+    val mapUiState by cafesViewModel.uiState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -59,7 +59,7 @@ fun RandomCafeScreen(mapViewModel: MapViewModel) {
             modifier = Modifier.padding(8.dp)
         )
         Button(
-            onClick = { mapViewModel.getRandomCafe(radius.roundToInt()) }
+            onClick = { cafesViewModel.getRandomCafe(radius.roundToInt()) }
         ) {
             Text("Surprise Me!", color = MaterialTheme.colorScheme.onPrimary)
         }

@@ -33,7 +33,7 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
-import com.izanhuang.cafe_hunter_android.core.domain.MapViewModel
+import com.izanhuang.cafe_hunter_android.core.domain.CafesViewModel
 import com.izanhuang.cafe_hunter_android.core.domain.ReviewViewModel
 import com.izanhuang.cafe_hunter_android.core.ui.components.cafes.CafeDetails
 import com.izanhuang.cafe_hunter_android.core.ui.components.map.setCoffeeCupMapIconWithText
@@ -47,7 +47,7 @@ import com.izanhuang.cafe_hunter_android.core.data.LatLng as CustomLatLng
 @OptIn(FlowPreview::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MapScreen(
-    mapViewModel: MapViewModel,
+    cafesViewModel: CafesViewModel,
     userLatLng: CustomLatLng,
     currentLatLng: CustomLatLng,
     cafes: List<PlaceResult>,
@@ -114,7 +114,7 @@ fun MapScreen(
                     zoom >= 10f -> 5000
                     else -> 10000
                 }
-                mapViewModel.updateCurrentLocation(
+                cafesViewModel.updateCurrentLocation(
                     CustomLatLng(lat = target.latitude, lng = target.longitude),
                     radius = radius,
                     zoom = zoom,

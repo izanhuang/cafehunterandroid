@@ -4,7 +4,7 @@ import com.google.android.gms.maps.model.LatLngBounds
 import com.izanhuang.cafe_hunter_android.core.data.LatLng
 import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
 
-data class MapUiState(
+data class CafesUiState(
     val userLatLng: LatLng,
     val currentLatLng: LatLng,
     val latLngBounds: LatLngBounds? = null,

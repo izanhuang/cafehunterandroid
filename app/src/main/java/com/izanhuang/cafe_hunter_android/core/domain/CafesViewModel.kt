@@ -20,13 +20,13 @@ import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MapViewModel(
+class CafesViewModel(
     private val repository: PlacesRepository,
     private val locationCache: LocationCache
 ) : ViewModel() {
-    private val _uiState: MutableStateFlow<Resource<MapUiState>> =
+    private val _uiState: MutableStateFlow<Resource<CafesUiState>> =
         MutableStateFlow(Resource.Loading)
-    val uiState: StateFlow<Resource<MapUiState>> = _uiState.asStateFlow()
+    val uiState: StateFlow<Resource<CafesUiState>> = _uiState.asStateFlow()
 
     init {
         // Observe cache changes and update UI state
@@ -38,7 +38,7 @@ class MapViewModel(
     }
 
     fun updateUserLocation(latlng: LatLng) {
-        _uiState.value = Resource.Success(MapUiState(userLatLng = latlng, currentLatLng = latlng))
+        _uiState.value = Resource.Success(CafesUiState(userLatLng = latlng, currentLatLng = latlng))
         fetchNearbyCafes(750)
     }
 
@@ -65,7 +65,7 @@ class MapViewModel(
                     }
                 }
             } catch (e: Exception) {
-                AppLogger.e("MapViewModel", "Error fetching random cafe", e)
+                AppLogger.e("CafesViewModel", "Error fetching random cafe", e)
             }
         }
     }
@@ -131,7 +131,7 @@ class MapViewModel(
                     }
                 }
             } catch (e: Exception) {
-                AppLogger.e("MapViewModel", "Error fetching cafes", e)
+                AppLogger.e("CafesViewModel", "Error fetching cafes", e)
             }
         }
     }
@@ -152,7 +152,7 @@ class MapViewModel(
                 val repository = PlacesRepository(api)
                 val locationCache = LocationCache() // Or inject this too
 
-                return MapViewModel(repository, locationCache) as T
+                return CafesViewModel(repository, locationCache) as T
             }
         }
     }

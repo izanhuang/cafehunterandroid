@@ -16,16 +16,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
-import com.izanhuang.cafe_hunter_android.core.domain.MapViewModel
+import com.izanhuang.cafe_hunter_android.core.domain.CafesViewModel
 import com.izanhuang.cafe_hunter_android.core.utils.Resource
 
 @Composable
-fun HomeScreen(mapViewModel: MapViewModel, isMapView: Boolean, navController: NavController) {
-    val locationUiState by mapViewModel.uiState.collectAsState()
+fun HomeScreen(cafesViewModel: CafesViewModel, isMapView: Boolean, navController: NavController) {
+    val locationUiState by cafesViewModel.uiState.collectAsState()
 
     when (val state = locationUiState) {
         is Resource.Success -> if (isMapView) MapScreen(
-            mapViewModel = mapViewModel,
+            cafesViewModel = cafesViewModel,
             userLatLng = state.data.userLatLng,
             currentLatLng = state.data.currentLatLng,
             cafes = state.data.cafes,

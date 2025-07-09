@@ -25,7 +25,7 @@ import com.google.android.gms.location.LocationServices
 import com.izanhuang.cafe_hunter_android.core.data.AppLogger
 import com.izanhuang.cafe_hunter_android.core.data.LatLng
 import com.izanhuang.cafe_hunter_android.core.domain.AuthViewModel
-import com.izanhuang.cafe_hunter_android.core.domain.MapViewModel
+import com.izanhuang.cafe_hunter_android.core.domain.CafesViewModel
 import com.izanhuang.cafe_hunter_android.core.ui.components.navigation.BottomNavigationBar
 import com.izanhuang.cafe_hunter_android.core.ui.components.auth.NavHostContainer
 import com.izanhuang.cafe_hunter_android.core.ui.components.map.ViewModeButton
@@ -37,7 +37,7 @@ val LocalAuthViewModel = staticCompositionLocalOf<AuthViewModel> { error("AuthVi
 class MainActivity : FragmentActivity() {
     // Initialize the location provider client
     private lateinit var locationClient: FusedLocationProviderClient
-    private lateinit var mapViewModel: MapViewModel
+    private lateinit var cafesViewModel: CafesViewModel
     private lateinit var authViewModel: AuthViewModel
 
     private fun getCurrentLocation() {
@@ -60,7 +60,7 @@ class MainActivity : FragmentActivity() {
         locationClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) {
                 // If location is available, extract latitude and longitude
-                mapViewModel.updateUserLocation(
+                cafesViewModel.updateUserLocation(
                     LatLng(
                         lat = location.latitude,
                         lng = location.longitude
@@ -75,7 +75,7 @@ class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         locationClient = LocationServices.getFusedLocationProviderClient(this)
-        mapViewModel = ViewModelProvider(this, MapViewModel.Factory)[MapViewModel::class.java]
+        cafesViewModel = ViewModelProvider(this, CafesViewModel.Factory)[CafesViewModel::class.java]
         authViewModel = ViewModelProvider(this, AuthViewModel.Factory)[AuthViewModel::class.java]
 
         getCurrentLocation()
@@ -108,7 +108,7 @@ class MainActivity : FragmentActivity() {
                                 NavHostContainer(
                                     navController = navController,
                                     padding = padding,
-                                    mapViewModel = mapViewModel,
+                                    cafesViewModel = cafesViewModel,
                                     isMapView = isMapView,
                                 )
                             }
