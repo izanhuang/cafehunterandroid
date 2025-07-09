@@ -24,7 +24,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
@@ -32,7 +31,9 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.izanhuang.cafe_hunter_android.core.data.LatLng
 import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
+import com.izanhuang.cafe_hunter_android.core.data.convertToGoogleType
 import com.izanhuang.cafe_hunter_android.core.domain.CafesViewModel
 import com.izanhuang.cafe_hunter_android.core.domain.ReviewViewModel
 import com.izanhuang.cafe_hunter_android.core.ui.components.cafes.CafeDetails
@@ -50,15 +51,15 @@ fun MapScreen(
     cafesViewModel: CafesViewModel,
     userLatLng: CustomLatLng,
     currentLatLng: CustomLatLng,
+    userLatLng: LatLng,
+    currentLatLng: LatLng,
     cafes: List<PlaceResult>,
     cameraZoom: Float,
     navController: NavController,
 ) {
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(
-            LatLng(
-                currentLatLng.lat, currentLatLng.lng
-            ), cameraZoom
+           currentLatLng.convertToGoogleType(), cameraZoom
         )
     }
     val uiSettings by remember {
@@ -115,7 +116,7 @@ fun MapScreen(
                     else -> 10000
                 }
                 cafesViewModel.updateCurrentLocation(
-                    CustomLatLng(lat = target.latitude, lng = target.longitude),
+                    LatLng(lat = target.latitude, lng = target.longitude),
                     radius = radius,
                     zoom = zoom,
                     latLngBounds = latLngBounds,
@@ -164,10 +165,7 @@ fun MapScreen(
         ) {
             Marker(
                 state = MarkerState(
-                    position = LatLng(
-                        userLatLng.lat,
-                        userLatLng.lng
-                    )
+                    position = userLatLng.convertToGoogleType()
                 ),
                 title = "You",
                 icon = setCustomMapIcon(
@@ -180,10 +178,7 @@ fun MapScreen(
             cafes.forEach { cafe ->
                 Marker(
                     state = MarkerState(
-                        LatLng(
-                            cafe.geometry.location.lat,
-                            cafe.geometry.location.lng
-                        )
+                        cafe.geometry.location.convertToGoogleType()
                     ),
                     title = cafe.name,
                     icon = setCoffeeCupMapIconWithText(cafe.name),
