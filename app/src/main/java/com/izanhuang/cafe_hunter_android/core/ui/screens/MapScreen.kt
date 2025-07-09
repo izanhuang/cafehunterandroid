@@ -43,7 +43,6 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
-import com.izanhuang.cafe_hunter_android.core.data.LatLng as CustomLatLng
 
 @OptIn(FlowPreview::class, ExperimentalMaterial3Api::class)
 @Composable
