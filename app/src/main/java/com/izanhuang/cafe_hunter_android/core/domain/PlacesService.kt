@@ -12,6 +12,6 @@ interface PlacesService {
 //        @Query("type") type: String = "cafe",
 //        @Query("rankby") rankBy: String = "distance",
         @Query("key") apiKey: String,
-        @Query("keyword") keyword: String = "cafe|coffee|coffee shop|bakery|espresso|tea|bubble tea|boba|dessert|bakery|milk tea"
+        @Query("keyword") keyword: String = "cafe|coffee|coffee shop|matcha|tea|bakery|espresso|tea|bubble tea|boba|dessert|bakery|milk tea"
     ): PlacesResponse
 }
