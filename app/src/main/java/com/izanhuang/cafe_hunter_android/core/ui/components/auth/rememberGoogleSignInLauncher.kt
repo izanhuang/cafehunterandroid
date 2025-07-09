@@ -1,4 +1,4 @@
-package com.izanhuang.cafe_hunter_android.core.ui.components
+package com.izanhuang.cafe_hunter_android.core.ui.components.auth
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts

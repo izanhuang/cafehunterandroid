@@ -32,7 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.izanhuang.cafe_hunter_android.core.data.User
 import com.izanhuang.cafe_hunter_android.core.domain.AuthViewModel
-import com.izanhuang.cafe_hunter_android.core.ui.components.EditNameDialog
+import com.izanhuang.cafe_hunter_android.core.ui.components.auth.EditNameDialog
 import com.izanhuang.cafe_hunter_android.core.utils.Resource
 
 @Composable

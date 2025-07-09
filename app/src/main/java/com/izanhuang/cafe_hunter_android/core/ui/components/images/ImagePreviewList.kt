@@ -1,4 +1,4 @@
-package com.izanhuang.cafe_hunter_android.core.ui.components
+package com.izanhuang.cafe_hunter_android.core.ui.components.images
 
 import android.net.Uri
 import androidx.compose.foundation.Image

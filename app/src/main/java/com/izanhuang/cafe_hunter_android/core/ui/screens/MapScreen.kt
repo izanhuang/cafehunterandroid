@@ -35,9 +35,9 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
 import com.izanhuang.cafe_hunter_android.core.domain.MapViewModel
 import com.izanhuang.cafe_hunter_android.core.domain.ReviewViewModel
-import com.izanhuang.cafe_hunter_android.core.ui.components.CafeDetails
-import com.izanhuang.cafe_hunter_android.core.ui.components.setCoffeeCupMapIconWithText
-import com.izanhuang.cafe_hunter_android.core.ui.components.setCustomMapIcon
+import com.izanhuang.cafe_hunter_android.core.ui.components.cafes.CafeDetails
+import com.izanhuang.cafe_hunter_android.core.ui.components.map.setCoffeeCupMapIconWithText
+import com.izanhuang.cafe_hunter_android.core.ui.components.map.setCustomMapIcon
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
@@ -79,6 +79,7 @@ fun MapScreen(
 
     val reviewViewModel = remember { ReviewViewModel() }
     var showReviewForm by remember { mutableStateOf(false) }
+    var hasLaunchedOnce by remember { mutableStateOf(false) }
 
     val submissionState by reviewViewModel.reviewSubmissionState
     val context = LocalContext.current
@@ -88,9 +89,11 @@ fun MapScreen(
     }
 
     LaunchedEffect(submissionState) {
-        if (!submissionState) {
+        if (hasLaunchedOnce && !submissionState) {
             Toast.makeText(context, "Review submitted!", Toast.LENGTH_SHORT).show()
             showReviewForm = false
+        } else {
+            hasLaunchedOnce = true
         }
     }
 

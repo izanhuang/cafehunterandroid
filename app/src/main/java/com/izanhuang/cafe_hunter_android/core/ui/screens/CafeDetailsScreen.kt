@@ -20,7 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
 import com.izanhuang.cafe_hunter_android.core.domain.ReviewViewModel
-import com.izanhuang.cafe_hunter_android.core.ui.components.CafeDetails
+import com.izanhuang.cafe_hunter_android.core.ui.components.cafes.CafeDetails
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,15 +31,18 @@ fun CafeDetailScreen(
 ) {
     val reviewViewModel = remember { ReviewViewModel() }
     var showReviewForm by remember { mutableStateOf(false) }
+    var hasLaunchedOnce by remember { mutableStateOf(false) }
 
     val submissionState by reviewViewModel.reviewSubmissionState
     val context = LocalContext.current
 
     // Show toast on successful submission
     LaunchedEffect(submissionState) {
-        if (!submissionState) {
+        if (hasLaunchedOnce && !submissionState) {
             Toast.makeText(context, "Review submitted!", Toast.LENGTH_SHORT).show()
             showReviewForm = false
+        } else {
+            hasLaunchedOnce = true
         }
     }
 

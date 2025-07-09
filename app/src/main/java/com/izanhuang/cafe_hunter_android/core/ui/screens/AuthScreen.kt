@@ -17,8 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.izanhuang.cafe_hunter_android.LocalAuthViewModel
-import com.izanhuang.cafe_hunter_android.core.ui.components.LoginForm
-import com.izanhuang.cafe_hunter_android.core.ui.components.RegisterForm
+import com.izanhuang.cafe_hunter_android.core.ui.components.auth.LoginForm
+import com.izanhuang.cafe_hunter_android.core.ui.components.auth.RegisterForm
 
 @Composable
 fun AuthScreen() {

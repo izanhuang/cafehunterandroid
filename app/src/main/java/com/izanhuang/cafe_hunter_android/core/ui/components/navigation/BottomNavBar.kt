@@ -1,4 +1,4 @@
-package com.izanhuang.cafe_hunter_android.core.ui.components
+package com.izanhuang.cafe_hunter_android.core.ui.components.navigation
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme

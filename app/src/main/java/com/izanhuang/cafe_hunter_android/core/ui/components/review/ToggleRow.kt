@@ -1,4 +1,4 @@
-package com.izanhuang.cafe_hunter_android.core.ui.components
+package com.izanhuang.cafe_hunter_android.core.ui.components.review
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth

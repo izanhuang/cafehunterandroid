@@ -1,4 +1,4 @@
-package com.izanhuang.cafe_hunter_android.core.ui.components
+package com.izanhuang.cafe_hunter_android.core.ui.components.auth
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column

@@ -28,9 +28,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
 import com.izanhuang.cafe_hunter_android.core.data.Review
 import com.izanhuang.cafe_hunter_android.core.domain.ReviewViewModel
-import com.izanhuang.cafe_hunter_android.core.ui.components.IconRatingRow
-import com.izanhuang.cafe_hunter_android.core.ui.components.ImagePreviewList
-import com.izanhuang.cafe_hunter_android.core.ui.components.ToggleRow
+import com.izanhuang.cafe_hunter_android.core.ui.components.review.IconRatingRow
+import com.izanhuang.cafe_hunter_android.core.ui.components.images.ImagePreviewList
+import com.izanhuang.cafe_hunter_android.core.ui.components.review.ToggleRow
 
 @Composable
 fun ReviewForm(

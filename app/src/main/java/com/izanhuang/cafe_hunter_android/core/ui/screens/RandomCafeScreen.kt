@@ -29,7 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
 import com.izanhuang.cafe_hunter_android.core.domain.MapViewModel
-import com.izanhuang.cafe_hunter_android.core.ui.components.CafeDetailsHeader
+import com.izanhuang.cafe_hunter_android.core.ui.components.cafes.CafeDetailsHeader
 import com.izanhuang.cafe_hunter_android.core.utils.Resource
 import kotlin.math.roundToInt
 

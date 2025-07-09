@@ -26,9 +26,9 @@ import com.izanhuang.cafe_hunter_android.core.data.AppLogger
 import com.izanhuang.cafe_hunter_android.core.data.LatLng
 import com.izanhuang.cafe_hunter_android.core.domain.AuthViewModel
 import com.izanhuang.cafe_hunter_android.core.domain.MapViewModel
-import com.izanhuang.cafe_hunter_android.core.ui.components.BottomNavigationBar
-import com.izanhuang.cafe_hunter_android.core.ui.components.NavHostContainer
-import com.izanhuang.cafe_hunter_android.core.ui.components.ViewModeButton
+import com.izanhuang.cafe_hunter_android.core.ui.components.navigation.BottomNavigationBar
+import com.izanhuang.cafe_hunter_android.core.ui.components.auth.NavHostContainer
+import com.izanhuang.cafe_hunter_android.core.ui.components.map.ViewModeButton
 import com.izanhuang.cafe_hunter_android.core.ui.theme.CafehunterandroidTheme
 import com.izanhuang.cafe_hunter_android.core.utils.Constants
 

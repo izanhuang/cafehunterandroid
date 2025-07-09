@@ -1,4 +1,4 @@
-package com.izanhuang.cafe_hunter_android.core.ui.components
+package com.izanhuang.cafe_hunter_android.core.ui.components.map
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.height

@@ -1,4 +1,4 @@
-package com.izanhuang.cafe_hunter_android.core.ui.components
+package com.izanhuang.cafe_hunter_android.core.ui.components.review
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column

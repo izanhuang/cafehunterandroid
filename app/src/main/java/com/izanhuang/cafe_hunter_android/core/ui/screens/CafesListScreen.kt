@@ -10,7 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
-import com.izanhuang.cafe_hunter_android.core.ui.components.CafeCard
+import com.izanhuang.cafe_hunter_android.core.ui.components.cafes.CafeCard
 
 @Composable
 fun CafesListScreen(cafes: List<PlaceResult>, navController: NavController) {

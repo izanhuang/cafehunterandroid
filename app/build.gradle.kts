@@ -102,10 +102,6 @@ dependencies {
     //Colt
     implementation(libs.coil.compose)
 
-    //Image carousel
-    implementation(libs.accompanist.pager)
-    implementation(libs.accompanist.pager.indicators)
-
     //Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     implementation("com.google.firebase:firebase-firestore-ktx")
@@ -113,6 +109,7 @@ dependencies {
     implementation("com.firebaseui:firebase-ui-auth:8.0.2")
     implementation("com.google.firebase:firebase-storage-ktx:20.0.0")
 
+    implementation("androidx.compose.foundation:foundation:1.4.3") // Or latest
     implementation("androidx.compose.foundation:foundation-layout:1.5.0")
 
     testImplementation(libs.junit)
