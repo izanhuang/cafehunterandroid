@@ -2,6 +2,7 @@ package com.izanhuang.cafe_hunter_android.core.ui.screens
 
 import ReviewForm
 import android.widget.Toast
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.izanhuang.cafe_hunter_android.core.data.PlaceResult
 import com.izanhuang.cafe_hunter_android.core.domain.ReviewViewModel
@@ -54,7 +56,8 @@ fun CafeDetailScreen(
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
-                }
+                },
+                windowInsets = WindowInsets(top = 0.dp)
             )
         }
     ) { padding ->
